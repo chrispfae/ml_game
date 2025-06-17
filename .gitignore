@@ -1,0 +1,7 @@
+images/
+.ipynb_checkpoints/
+**/__pycache__/
+**/.DS_Store/
+**/.idea/
+models/efficientnetV2_pretrained.keras
+models/inceptionV3_pretrained.keras
