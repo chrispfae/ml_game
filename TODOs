@@ -1,0 +1,10 @@
+- Wahrscheinlichkeiten von Model soll sich verbessern mit den Preprocessing Schritten
+- Progress bar not over each epoch, but overall
+- angry pictures when selecting the wrong door
+- restriction of the regression to a sensible range
+- Why are we learning the regression? Motivation has to be established earlier in the task.
+- Code cleanup
+
+Done
+- Alternative text for task 2 depending on the result
+- Remove background from images for second validation and for the final door results

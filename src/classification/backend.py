@@ -5,7 +5,7 @@ from os.path import join, isfile, abspath
 from PIL import Image as PILImage
 from keras import Model
 from keras.applications import MobileNetV3Small
-from keras.layers import GlobalAveragePooling2D, Dense, Input
+from keras.layers import GlobalAveragePooling2D, Dense, Input, Concatenate
 from keras.optimizers import Adam
 from keras.src.backend import image_data_format
 from keras.src.losses import BinaryCrossentropy
@@ -61,7 +61,8 @@ def load_images_from_path(img_path: str) -> list[ImageData]:
     Returns:
         list[ImageData]: a list of ImageData objects, each representing an image in the directory.
     """
-    return [ImageData(img_path=join(img_path, image)) for image in listdir(img_path) if isfile(join(img_path, image))]
+    image_data = [ImageData(img_path=join(img_path, image)) for image in listdir(img_path) if isfile(join(img_path, image))]
+    return image_data
 
 
 def load_image_for_prediction(img_path: str) -> ndarray:
@@ -75,10 +76,12 @@ def load_image_for_prediction(img_path: str) -> ndarray:
     Returns:
         ndarray: the image as a Numpy array, ready for prediction.
     """
-    img = load_img(img_path, target_size=(512, 384))
-    img_array = img_to_array(img)
-    img_array = expand_dims(img_array, axis=0)
-    return img_array
+    #img = load_img(img_path, target_size=(512, 384))
+    #img_array = img_to_array(img)
+    #img_array = expand_dims(img_array, axis=0)
+    #return img_array
+    image_data = [ImageData(img_path=img_path)]
+    return image_data
 
 
 def load_model(model_path: str) -> Model:
@@ -104,7 +107,6 @@ def load_model_mobilenet():
         include_top=False,
         weights='imagenet'
     )
-    
     # Freeze base model initially
     base_model.trainable = False
     
@@ -115,7 +117,35 @@ def load_model_mobilenet():
     outputs = Dense(1, activation='sigmoid')(x)  # Binary classification
     model = Model(inputs, outputs)
     model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['binary_accuracy'])
-    return model 
+    return model
+
+def load_model_mobilenet_with_logo():
+        
+    # Base CNN model
+    base_model = MobileNetV3Small(
+        input_shape=(512, 512, 3),
+        include_top=False,
+        weights='imagenet'
+    )
+    base_model.trainable = False
+
+    # Image input
+    image_input = Input(shape=(512, 512, 3), name='image_input')
+    # Single extra feature input (e.g., a scalar)
+    logo_input = Input(shape=(1,), name='logo_input')
+
+    # Add custom classification head 
+    x = base_model(image_input, training=False)
+    x = GlobalAveragePooling2D()(x)
+    # Combine CNN features with extra scalar input
+    x = Concatenate()([x, single_input])
+    # Classification head
+    x = Dense(128, activation='relu')(x)
+    output = Dense(1, activation='sigmoid')(x)
+    # Final model
+    model = Model(inputs=[image_input, single_input], outputs=output)
+    model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['binary_accuracy'])
+    return model
 
 
 def get_possible_models(models_path: str) -> dict[str, str]:
@@ -159,34 +189,36 @@ def get_test_data(safe_images: list[ImageData], danger_images: list[ImageData], 
         shuffle_buffer_size=50,
         data_format=image_data_format()
     )
-    import matplotlib.pyplot as plt
-    # Take one batch (or one element) from the dataset
-    i = 0
-    for image, label in dataset.take(10):
-        # If the image is a tensor, convert it to numpy
-        image = image.numpy()
-        label = label.numpy()
+    logo = [1 for img in images if 'gef' in img else 0]
+    
+    #import matplotlib.pyplot as plt
+    ## Take one batch (or one element) from the dataset
+    #i = 0
+    #for image, label in dataset.take(10):
+    #    # If the image is a tensor, convert it to numpy
+    #    image = image.numpy()
+    #    label = label.numpy()
 
-        # Optional: If channels are first (e.g., (3, 512, 384)), transpose it
-        if image.shape[0] == 3 and len(image.shape) == 3:
-            image = image.transpose(1, 2, 0)
+    #    # Optional: If channels are first (e.g., (3, 512, 384)), transpose it
+    #    if image.shape[0] == 3 and len(image.shape) == 3:
+    #        image = image.transpose(1, 2, 0)
 
-        # Normalize pixel values to [0, 1] if necessary
-        if image.max() > 1:
-            image = image / 255.0
+    #    # Normalize pixel values to [0, 1] if necessary
+    #    if image.max() > 1:
+    #        image = image / 255.0
 
-        plt.imshow(image)
-        plt.title(f"Label: {label}")
-        plt.axis('off')
-        plt.savefig(f'/home/chris/Downloads/out/{i}.png')
-        i += 1
+    #    plt.imshow(image)
+    #    plt.title(f"Label: {label}")
+    #    plt.axis('off')
+    #    plt.savefig(f'/home/chris/Downloads/out/{i}.png')
+    #    i += 1
 
     if batch:
         dataset = dataset.batch(4)
     else:
         dataset = dataset.batch(1)
     dataset = dataset.prefetch(AUTOTUNE)
-    
+   
     return dataset
 
     

@@ -255,7 +255,6 @@ class TestBox(ImageBox):
         #img_array = load_image_for_prediction(self._img.img_path)
 
         prediction = self.model.predict(self.img_data_prepro[0])
-        print(prediction)
         #score = float(sigmoid(prediction[0]))
         score = prediction[0, 0]
         result = "harmlos" if score < 0.5 else "gefährlich"

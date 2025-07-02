@@ -1,8 +1,8 @@
 from logging import getLogger
 from math import ceil
-from os import getcwd
-from os.path import join, abspath
+import os
 from random import choices
+import sys
 from time import sleep
 
 from IPython.core.display_functions import display, DisplayHandle
@@ -10,7 +10,7 @@ from ipywidgets import Button, HTML, VBox, HBox, Layout, GridspecLayout, IntProg
 from jupyterlab.browser_check import test_flags
 from keras.src.ops import sigmoid
 
-from classification.backend import load_images_from_path, load_model_mobilenet, get_test_data, get_possible_models, load_image_for_prediction, ImageData
+from classification.backend import load_images_from_path, load_model_mobilenet, load_model_mobilenet_with_logo, get_test_data, get_possible_models, load_image_for_prediction, ImageData
 from classification.ui import LabeledImageButtonBox, ImageButtonBox, ImageCategory, TestBox, TrainingCallback, LabeledImageBox, SelectionBox, ImageBox
 from utils.colors import colors, color_to_string
 
@@ -36,14 +36,23 @@ class Aufgabe:
         """
         Initializes the Aufgabe class and loads the images from the specified paths.
         """
-        test_folder_path = join(getcwd(), "images/classification", "validation")
+        test_folder_path = os.path.join(os.getcwd(), "images/classification", "validation")
         self.validation_images = load_images_from_path(test_folder_path)
+        
+        test_folder_path_bg = os.path.join(os.getcwd(), "images/classification", "validation_without_background")
+        self.validation_images_bg = load_images_from_path(test_folder_path_bg)
 
-        image_folder = join(getcwd(), "images/classification", "training")
+        image_folder = os.path.join(os.getcwd(), "images/classification", "training")
         self.images = load_images_from_path(image_folder)
-
-        unknown_folder_path = join(getcwd(), "images/classification", "testing_doors")
+        
+        image_folder_bg = os.path.join(os.getcwd(), "images/classification", "training_without_background")
+        self.images_bg = load_images_from_path(image_folder_bg)
+        
+        unknown_folder_path = os.path.join(os.getcwd(), "images/classification", "testing_doors")
         self.unknown_images = load_images_from_path(unknown_folder_path)
+
+        unknown_folder_path_bg = os.path.join(os.getcwd(), "images/classification", "testing_doors_without_background")
+        self.unknown_images_bg = load_images_from_path(unknown_folder_path_bg)
 
         self.sorted_images = None
 
@@ -53,7 +62,16 @@ class Aufgabe:
                 self.categorized_images[image.job].append(image)
             else:
                 self.categorized_images[image.job] = [image]
+
+        self.categorized_images_bg = {}
+        for image in self.images_bg:
+            if image.job in self.categorized_images_bg:
+                self.categorized_images_bg[image.job].append(image)
+            else:
+                self.categorized_images_bg[image.job] = [image]
+
         self.model = None
+        self.model_logo = None
 
     def part1(self):
         """
@@ -71,6 +89,9 @@ class Aufgabe:
         while counter_cute + counter_assistent + counter_aufseher < k:
             i = counter_cute + counter_assistent + counter_aufseher + discarded
             candidate_image = self.images[i]
+            if os.path.basename(candidate_image.img_path)[:3] == 'aug':
+                discarded += 1
+                continue
             if candidate_image.job == 'Kinderbetreuung':
                 if counter_cute == 2:
                     discarded += 1
@@ -151,17 +172,23 @@ class Aufgabe:
         The user has to classify unknown test images as "safe" or "dangerous" by clicking the corresponding buttons.
         """
         self.sorted_images: dict[str, list[ImageData]] = {"safe": [], "danger": []}
+        counter_dangerous = 0
+        counter_safe = 0
         for img in self.images:
-            if img.is_dangerous:
+            if os.path.basename(img.img_path)[:3] == 'aug':
+                continue
+            if img.is_dangerous and counter_dangerous < 5:
+                counter_dangerous += 1
                 self.sorted_images["danger"].append(img)
-            else:
+            elif img.is_clean and counter_safe < 5:
+                counter_safe += 1
                 self.sorted_images["safe"].append(img)
 
         box_layout = Layout(overflow="scroll", width="100%")
         danger_box = VBox([HTML("<b>Gefährlich</b>"), HBox([LabeledImageBox(x).widget for x in self.sorted_images["danger"]], layout=box_layout)])
         safe_box = VBox([HTML("<b>Harmlos</b>"), HBox([LabeledImageBox(x).widget for x in self.sorted_images["safe"]], layout=box_layout)])
 
-        sort_text = HTML('<p><b>Beep:</b> Fertig! Ich hab für euch alle Roboter sortiert. Hier sind neun Beispiele für jede Kategorie. </p>')
+        sort_text = HTML('<p><b>Beep:</b> "Fertig! Ich hab für euch alle Roboter sortiert. Hier sind ein paar Beispiele für jede Kategorie." </p>')
 
         display_box = VBox([sort_text, danger_box, safe_box])
 
@@ -169,15 +196,20 @@ class Aufgabe:
 
         instruction = HTML(
             '<p><b>Ben:</b> "Danke Beep. Aber wir haben immer noch ein Problem. Bei den Robotern, die die Türe verschließen wissen wir den Beruf nicht, nur wie sie aussehen."'
-            '<p><b>Sarah:</b> Stimmt. Die Kinderbetreuer zu identifizieren ist leicht, aber die Assistenz und Aufseher Roboter sehen alle gleich aus.'
+            '<p><b>Sarah:</b> "Stimmt. Die Kinderbetreuer zu identifizieren ist leicht, aber die Assistenz und Aufseher Roboter sehen alle gleich aus."'
             '<p><b>Ben:</b> "Vielleicht können wir einfach raten?"'
             '<p><b>Beep:</b> "Das halte ich für keine gute Idee, aber versucht es ruhig. Hier sind ein paar Roboterakten, die ihr noch nicht gesehen habt. Ich habe diese vorhin zurückgehalten. Ich zeige euch auch direkt an, ob es stimmt. Grün ist wieder richtig und rot falsch."</p>')
 
         test_img_widgets = [ImageButtonBox(data) for data in self.validation_images]
-
+        
+        counter = 0
+        counter_correct = 0
         def on_safe_button_click_generator(button_box: ImageButtonBox):
             def on_safe_button_click(b):
+                nonlocal counter, counter_correct
+                counter += 1
                 if button_box.solution:
+                    counter_correct += 1
                     button_box.set_safe_button_layout(style=color_to_string(colors['green']))
                     button_box.set_danger_button_layout(style="")
                     button_box.disable_buttons(True, True)
@@ -185,12 +217,22 @@ class Aufgabe:
                     button_box.set_safe_button_layout(style=color_to_string(colors['red']))
                     button_box.set_danger_button_layout(style="")
                     button_box.disable_buttons(True, True)
-
+                if counter == 7:
+                    if counter_correct >= 6:
+                        reaction_text = HTML('<p><b>Ben:</b> "Da hatten wir aber viel Glueck. Aber was ist, wenn es beim nächsten Mal nicht mehr so gut läuft?"</p>') 
+                    elif counter_correct >= 3:
+                        reaction_text = HTML('<p><b>Ben:</b> "Das war schon gar nicht schlecht. Aber das ist trotzdem ein zu hohes Risiko."</p>') 
+                    else:
+                        reaction_text = HTML('<p><b>Ben:</b> "Puh. Das war wohl eher ein wildes Raten! Das würden wir im Ernstfall wohl nicht überstehen."</p>') 
+                    display_box.children += (reaction_text, )
             return on_safe_button_click
 
         def on_danger_button_click_generator(button_box: ImageButtonBox):
             def on_danger_button_click(b):
+                nonlocal counter, counter_correct
+                counter += 1
                 if not button_box.solution:
+                    counter_correct += 1
                     button_box.set_danger_button_layout(style=color_to_string(colors['green']))
                     button_box.set_safe_button_layout(style="")
                     button_box.disable_buttons(True, True)
@@ -198,7 +240,14 @@ class Aufgabe:
                     button_box.set_danger_button_layout(style=color_to_string(colors['red']))
                     button_box.set_safe_button_layout(style="")
                     button_box.disable_buttons(True, True)
-
+                if counter == 7:
+                    if counter_correct >= 6:
+                        reaction_text = HTML('<p><b>Ben:</b> "Da hatten wir aber viel Glueck. Aber was ist, wenn es beim nächsten Mal nicht mehr so gut läuft?"</p>') 
+                    elif counter_correct >= 3:
+                        reaction_text = HTML('<p><b>Ben:</b> "Das war schon gar nicht schlecht. Aber das ist trotzdem ein zu hohes Risiko."</p>') 
+                    else:
+                        reaction_text = HTML('<p><b>Ben:</b> "Puh. Das war wohl eher ein wildes Raten! Das würden wir im Ernstfall wohl nicht überstehen."</p>') 
+                    display_box.children += (reaction_text, )
             return on_danger_button_click
 
         for box in test_img_widgets:
@@ -221,15 +270,23 @@ class Aufgabe:
         train_button = Button(description="Trainieren", disabled=True)
         instruction = HTML("")
         categories = [ImageCategory(job, images) for job, images in self.categorized_images.items()]
-        image_box = GridspecLayout(len(categories), 1)
+        # _vis only used for visualization, not for training
+        categorized_images_vis = {}
+        for job, images in self.categorized_images.items():
+            images_orig = [image for image in images if os.path.basename(image.img_path)[:3] != 'aug']
+            categorized_images_vis[job] = images_orig[:5]
+        categories_vis = [ImageCategory(job, images) for job, images in categorized_images_vis.items()]
+        image_box = GridspecLayout(len(categories_vis), 1)
 
-        for i, category in enumerate(categories):
+        for i, category in enumerate(categories_vis):
             image_box[i, 0] = category.widget
         display_box = VBox([instruction, image_box, train_button])
 
         def on_safe_button_click_generator(category: ImageCategory):
             def on_safe_button_click(b):
-                category.save = True
+                for img_cat in categories:
+                    if img_cat.name == category.name:
+                        img_cat.save = True  # update categories, which contains all images instead of categories_vis, which only contains the visualized images.
                 category.set_layout(box_layout=Layout(border=f'2px solid {color_to_string(colors["grey"])}'))
                 category.set_button_style(safe_button_style=color_to_string(colors['grey']))
                 category.disable_buttons(True, True)
@@ -239,7 +296,9 @@ class Aufgabe:
 
         def on_danger_button_click_generator(category: ImageCategory):
             def on_danger_button_click(b):
-                category.save = False
+                for img_cat in categories:
+                    if img_cat.name == category.name:
+                        img_cat.save = False  # update categories, which contains all images instead of categories_vis, which only contains the visualized images.
                 category.set_layout(box_layout=Layout(border=f'2px solid {color_to_string(colors["grey"])}'))
                 category.set_button_style(danger_button_style=color_to_string(colors['grey']))
                 category.disable_buttons(True, True)
@@ -247,12 +306,11 @@ class Aufgabe:
 
             return on_danger_button_click
 
-        for category in categories:
+        for category in categories_vis:
             category.on_safe_click(on_safe_button_click_generator(category))
             category.on_danger_click(on_danger_button_click_generator(category))
 
         train_button.on_click(lambda b: self._train_model_part3(dis, train_button, display_box, categories))
-
         dis.update(display_box)
 
     def _train_model_part3(self, dis: DisplayHandle, train_button: Button, display_box: VBox, categories: list[ImageCategory]):
@@ -285,7 +343,8 @@ class Aufgabe:
             'bisschen dauern. Wir bekommen aber eine Rückmeldung, wie sich das Model verbessert. Dafür hat das Model die Daten in zwei Teile aufgeteilt. Mit dem einen Teil trainiert es und den '
             'anderen Teil benutzt es um sich selbst zu überprüfen. Nach jedem Durchlauf sehen wir, wie viel Prozent der Daten das Model bei der Überprüfung richtig hat."</p>')
         display_box.children += (train_text, progress, result_text)
-        model.fit(train_data, validation_data=validation_data, epochs=5, callbacks=[TrainingCallback(progress, result_text)])
+        n_epochs = 1
+        model.fit(train_data, validation_data=validation_data, epochs=n_epochs, callbacks=[TrainingCallback(progress, result_text)])
         #model.evaluate(test_data, callbacks=[TrainingCallback(progress, result_text)])
 
         restart_button = Button(description="Neu trainieren", layout=Layout(width="99%"))
@@ -297,7 +356,14 @@ class Aufgabe:
 
         display_box.children += (explanation, box, restart_button)
 
+
     def part4(self, dis: DisplayHandle = None):
+        """
+        Initializes the UI for the third part of the task.
+        The user has to select images for training the model.
+        Then the user can train the model with the selected images.
+        The images are displayed with all information about them.
+        """
         if dis is None:
             dis = display(HTML(""), display_id=True)
             #dis = display(VBox([]), display_id=True)
@@ -305,15 +371,23 @@ class Aufgabe:
         train_button = Button(description="Trainieren", disabled=True)
         instruction = HTML("")
         categories = [ImageCategory(job, images) for job, images in self.categorized_images.items() if job != 'Kinderbetreuung']
-        image_box = GridspecLayout(len(categories), 1)
+        # _vis only used for visualization, not for training
+        categorized_images_vis = {}
+        for job, images in self.categorized_images.items():
+            images_orig = [image for image in images if os.path.basename(image.img_path)[:3] != 'aug']
+            categorized_images_vis[job] = images_orig[:5]
+        categories_vis = [ImageCategory(job, images) for job, images in categorized_images_vis.items() if job != 'Kinderbetreuung']
+        image_box = GridspecLayout(len(categories_vis), 1)
 
-        for i, category in enumerate(categories):
+        for i, category in enumerate(categories_vis):
             image_box[i, 0] = category.widget
         display_box = VBox([instruction, image_box, train_button])
 
         def on_safe_button_click_generator(category: ImageCategory):
             def on_safe_button_click(b):
-                category.save = True
+                for img_cat in categories:
+                    if img_cat.name == category.name:
+                        img_cat.save = True  # update categories, which contains all images instead of categories_vis, which only contains the visualized images.
                 category.set_layout(box_layout=Layout(border=f'2px solid {color_to_string(colors["grey"])}'))
                 category.set_button_style(safe_button_style=color_to_string(colors['grey']))
                 category.disable_buttons(True, True)
@@ -323,7 +397,9 @@ class Aufgabe:
 
         def on_danger_button_click_generator(category: ImageCategory):
             def on_danger_button_click(b):
-                category.save = False
+                for img_cat in categories:
+                    if img_cat.name == category.name:
+                        img_cat.save = False  # update categories, which contains all images instead of categories_vis, which only contains the visualized images.
                 category.set_layout(box_layout=Layout(border=f'2px solid {color_to_string(colors["grey"])}'))
                 category.set_button_style(danger_button_style=color_to_string(colors['grey']))
                 category.disable_buttons(True, True)
@@ -331,14 +407,13 @@ class Aufgabe:
 
             return on_danger_button_click
 
-        for category in categories:
+        for category in categories_vis:
             category.on_safe_click(on_safe_button_click_generator(category))
             category.on_danger_click(on_danger_button_click_generator(category))
 
         train_button.on_click(lambda b: self._train_model_part4(dis, train_button, display_box, categories))
+        dis.update(display_box)
 
-        dis.update(display_box)       
-    
     def _train_model_part4(self, dis: DisplayHandle, train_button: Button, display_box: VBox, categories: list[ImageCategory]):
         """
         Shows the training progress of the model and the results after training.
@@ -366,7 +441,8 @@ class Aufgabe:
         result_text = HTML("")
         train_text = HTML("")
         display_box.children += (train_text, progress, result_text)
-        self.model.fit(train_data, validation_data=validation_data, epochs=5, callbacks=[TrainingCallback(progress, result_text)])
+        n_epochs = 1
+        self.model.fit(train_data, validation_data=validation_data, epochs=n_epochs, callbacks=[TrainingCallback(progress, result_text)])
         #model.evaluate(test_data, callbacks=[TrainingCallback(progress, result_text)])
 
         restart_button = Button(description="Neu trainieren", layout=Layout(width="99%"))
@@ -376,6 +452,104 @@ class Aufgabe:
         box = HBox(layout=Layout(width="fit-content", height="fit-content"))
         validation_data_temp = get_test_data([img for img in self.validation_images if img.is_clean], [img for img in self.validation_images if img.is_dangerous], batch=False)  # must include Kinderbetreuung to be consistent with self.validation_images in the next line.
         box.children = [TestBox(img, img_data, self.model).widget for img, img_data in zip(self.validation_images, validation_data_temp) if img.job != 'Kinderbetreuung']
+
+        display_box.children += (explanation, box, restart_button)
+
+    def part5(self, dis: DisplayHandle = None):
+        """
+        Initializes the UI for the third part of the task.
+        The user has to select images for training the model.
+        Then the user can train the model with the selected images.
+        The images are displayed with all information about them.
+        """
+        if dis is None:
+            dis = display(HTML(""), display_id=True)
+            #dis = display(VBox([]), display_id=True)
+
+        train_button = Button(description="Trainieren", disabled=True)
+        instruction = HTML("")
+        categories = [ImageCategory(job, images) for job, images in self.categorized_images_bg.items() if job != 'Kinderbetreuung']
+        # _vis only used for visualization, not for training
+        categorized_images_vis = {}
+        for job, images in self.categorized_images_bg.items():
+            images_orig = [image for image in images if os.path.basename(image.img_path)[:3] != 'aug']
+            categorized_images_vis[job] = images_orig[:5]
+        categories_vis = [ImageCategory(job, images) for job, images in categorized_images_vis.items() if job != 'Kinderbetreuung']
+        image_box = GridspecLayout(len(categories_vis), 1)
+
+        for i, category in enumerate(categories_vis):
+            image_box[i, 0] = category.widget
+        display_box = VBox([instruction, image_box, train_button])
+
+        def on_safe_button_click_generator(category: ImageCategory):
+            def on_safe_button_click(b):
+                for img_cat in categories:
+                    if img_cat.name == category.name:
+                        img_cat.save = True  # update categories, which contains all images instead of categories_vis, which only contains the visualized images.
+                category.set_layout(box_layout=Layout(border=f'2px solid {color_to_string(colors["grey"])}'))
+                category.set_button_style(safe_button_style=color_to_string(colors['grey']))
+                category.disable_buttons(True, True)
+                train_button.disabled = not all([cat.save is not None for cat in categories])
+
+            return on_safe_button_click
+
+        def on_danger_button_click_generator(category: ImageCategory):
+            def on_danger_button_click(b):
+                for img_cat in categories:
+                    if img_cat.name == category.name:
+                        img_cat.save = False  # update categories, which contains all images instead of categories_vis, which only contains the visualized images.
+                category.set_layout(box_layout=Layout(border=f'2px solid {color_to_string(colors["grey"])}'))
+                category.set_button_style(danger_button_style=color_to_string(colors['grey']))
+                category.disable_buttons(True, True)
+                train_button.disabled = not all([cat.save is not None for cat in categories])
+
+            return on_danger_button_click
+
+        for category in categories_vis:
+            category.on_safe_click(on_safe_button_click_generator(category))
+            category.on_danger_click(on_danger_button_click_generator(category))
+
+        train_button.on_click(lambda b: self._train_model_part5(dis, train_button, display_box, categories))
+        dis.update(display_box)
+
+    def _train_model_part5(self, dis: DisplayHandle, train_button: Button, display_box: VBox, categories: list[ImageCategory]):
+        """
+        Shows the training progress of the model and the results after training.
+        It also displays some unknown test images to check the model's performance.
+        """
+        train_button.disabled = True
+        self.model_logo = load_model_mobilenet()
+        safe_images = []
+        danger_images = []
+        for cat in categories:
+            if cat.save:
+                safe_images += cat._img_data
+            elif not cat.save:
+                danger_images += cat._img_data
+        train_data = get_test_data([img for img in safe_images], [img for img in danger_images])
+        validation_data = get_test_data([img for img in self.validation_images_bg if (img.is_clean and img.job !='Kinderbetreuung')], [img for img in self.validation_images_bg if img.is_dangerous], batch=False)
+        progress = IntProgress(
+            value=0,
+            min=0,
+            max=train_data.cardinality().numpy(),
+            description="Training: ",
+            style={'bar_color': 'blue'},
+            orientation='horizontal',
+        )
+        result_text = HTML("")
+        train_text = HTML("")
+        display_box.children += (train_text, progress, result_text)
+        n_epochs = 1
+        self.model_logo.fit(train_data, validation_data=validation_data, epochs=n_epochs, callbacks=[TrainingCallback(progress, result_text)])
+        #model.evaluate(test_data, callbacks=[TrainingCallback(progress, result_text)])
+
+        restart_button = Button(description="Neu trainieren", layout=Layout(width="99%"))
+        restart_button.on_click(lambda b: self.part3(dis))
+        explanation = HTML('<p><b>Beep:</b> "Ich hab euch hier wieder die gleichen Roboterakten wie bei Aufgabe 1 zum Testen zur Verfügung gestellt."</p>')
+
+        box = HBox(layout=Layout(width="fit-content", height="fit-content"))
+        validation_data_temp = get_test_data([img for img in self.validation_images_bg if img.is_clean], [img for img in self.validation_images_bg if img.is_dangerous], batch=False)  # must include Kinderbetreuung to be consistent with self.validation_images in the next line.
+        box.children = [TestBox(img, img_data, self.model_logo).widget for img, img_data in zip(self.validation_images_bg, validation_data_temp) if img.job != 'Kinderbetreuung']
 
         display_box.children += (explanation, box, restart_button)
 
@@ -461,8 +635,8 @@ class Aufgabe:
         """
         if dis is None:
             dis = display(HTML(""), display_id=True)
-        if self.model is None:
-            dis.update(HTML("<h3>Bitte zuerst Part 4 vollständig bearbeiten, damit wir ein Model haben, mit dem wir die Vorhersagen durchführen können</h3>"))
+        if self.model_logo is None:
+            dis.update(HTML("<h3>Bitte zuerst Part 5 vollständig bearbeiten, damit wir ein finales Model haben, mit dem wir die Vorhersagen durchführen können</h3>"))
             return
         roboters = [
             {
@@ -475,7 +649,7 @@ class Aufgabe:
                 "door": Button(description=robot_data.name.replace("Roboter", "Tür"), disabled=False, style=dict(button_color=color_to_string(colors['brown'])),
                                layout=Layout(height="125px", width="75px", align_conten="center", justyfy_content="center", margin="10px", border=f"2px solid {color_to_string(colors['grey'])}"))
             }
-            for robot_data in self.unknown_images
+            for robot_data in self.unknown_images_bg
         ]
         for robot in roboters:
             robot["widget"] = VBox([robot["title"], robot["box"].widget, robot["text"], robot["button"]], layout=Layout(margin="10px", padding="5px"))
@@ -500,9 +674,13 @@ class Aufgabe:
             """
             def on_click(b):
                 img_array = load_image_for_prediction(img_path)
-                prediction = self.model.predict(img_array)
-                score = float(sigmoid(prediction[0][0]))
-                text_widget.value = f"Harmlos: {score:.1%} <br> Gefährlich: {1 - score:.1%}"
+                data_set = get_test_data(img_array, img_array, batch=False) # Create dataset - function needs at least one sample for each label. Thus, we artificially feed the same sample twice and select it in the for loop. For loop necessary as indexing is not supported.
+                for sample in data_set:
+                    prediction = self.model_logo.predict(sample[0])
+                    break
+                score = prediction[0, 0]
+                #score = float(sigmoid(prediction[0][0]))
+                text_widget.value = f"Harmlos: {1 - score:.1%} <br> Gefährlich: {score:.1%}"
 
             return on_click
 
@@ -534,8 +712,8 @@ class Aufgabe:
         else:
             result.value = ('<p>Ihr öffnet die Tür und schaut den Roboter erwartungsvoll an. Kaum merkt er, dass die Tür offen ist, kommt er bedrohlich auf euch zu. '
                             'Ihr schafft es gerade noch so die Tür wieder zuzuschlagen.</p>'
-                            '<p><b>Ben:</b> Puh, das war knapp! Bei der nächsten Tür dürfen wir uns nicht mehr irren.</p>'
-                            '<p><b>Sarah:</b> Wenigsten wissen wir jetzt, dass es nicht diese Tür ist.</p>')
+                            '<p><b>Ben:</b> "Puh, das war knapp! Bei der nächsten Tür dürfen wir uns nicht mehr irren."</p>'
+                            '<p><b>Sarah:</b> "Wenigsten wissen wir jetzt, dass es nicht diese Tür ist."</p>')
 
             sleep(6)
             self.part5(dis)
