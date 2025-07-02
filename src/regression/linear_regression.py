@@ -69,7 +69,7 @@ def lineare_regression():
     dependent_variable = get_dependent_variable(independent_variable)
 
     # Plot height vs speed.
-    fig, ax = plt.subplots(figsize=(7, 5))
+    fig, ax = plt.subplots(figsize=(5, 3))
     ax.scatter(independent_variable, dependent_variable, color=colors['dark_blue'], label='Daten der Kinder')
 
     # Plot adjustable regression line.
