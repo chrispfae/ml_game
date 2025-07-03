@@ -17,6 +17,7 @@ from keras.src.utils import load_img, img_to_array
 from keras.src.utils.image_dataset_utils import paths_and_labels_to_dataset
 from numpy import ndarray
 import numpy as np
+import tensorflow as tf
 from tensorflow.python.data import AUTOTUNE, Dataset
 
 logger = getLogger(__name__)
@@ -119,8 +120,8 @@ def load_model_mobilenet():
     model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['binary_accuracy'])
     return model
 
+
 def load_model_mobilenet_with_logo():
-        
     # Base CNN model
     base_model = MobileNetV3Small(
         input_shape=(512, 512, 3),
@@ -134,18 +135,18 @@ def load_model_mobilenet_with_logo():
     # Single extra feature input (e.g., a scalar)
     logo_input = Input(shape=(1,), name='logo_input')
 
-    # Add custom classification head 
+    # Add custom classification head
     x = base_model(image_input, training=False)
     x = GlobalAveragePooling2D()(x)
     # Combine CNN features with extra scalar input
-    x = Concatenate()([x, single_input])
+    x = Concatenate()([x, logo_input])
     # Classification head
     x = Dense(128, activation='relu')(x)
     output = Dense(1, activation='sigmoid')(x)
     # Final model
-    model = Model(inputs=[image_input, single_input], outputs=output)
+    model = Model(inputs=[image_input, logo_input], outputs=output)
     model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['binary_accuracy'])
-    return model
+    return model 
 
 
 def get_possible_models(models_path: str) -> dict[str, str]:
@@ -159,6 +160,51 @@ def get_possible_models(models_path: str) -> dict[str, str]:
     models = [model for model in models if model.endswith(".keras")]
     models = {model.title().strip(".keras").split("_")[0]: join(models_path, model) for model in models}
     return models
+
+
+def parse_image(img_path):
+    # Load image file
+    image = tf.io.read_file(img_path)
+    # Decode image
+    image = tf.image.decode_image(image, channels=3, expand_animations=False)
+    image.set_shape([None, None, 3])  # Optional: Set shape for performance
+    return image
+
+
+def process_image_with_logo(image_path, logo_value, label):
+    # Load image
+    # image = tf.io.read_file(image_path)
+    # image = tf.image.decode_image(image, channels=3)
+    image = image_path
+    #print(image)
+    image = tf.image.resize(image, [512, 512])  # Match your desired size
+    #print(image)
+    # image = tf.cast(image, tf.float32) / 255.0  # Normalize
+
+    return {'image_input': image, 'logo_input': tf.expand_dims(logo_value, axis=-1)}, label
+
+
+    
+def get_test_data_with_logo(imgs, batch=True):
+    img_paths = [img.img_path for img in imgs]
+    labels = [1 if 'gef' in path else 0 for path in img_paths]
+    logos = [1 if 'logo' in path else 0 for path in img_paths]
+    # Create tf.data.Dataset from raw lists
+    path_ds = tf.data.Dataset.from_tensor_slices(img_paths)
+    image_ds = path_ds.map(parse_image, num_parallel_calls=tf.data.AUTOTUNE)
+    #image_ds = tf.data.Dataset.from_tensor_slices(images)
+    label_ds = tf.data.Dataset.from_tensor_slices(labels)
+    logo_ds = tf.data.Dataset.from_tensor_slices(logos)
+    # Zip into one dataset
+    combined_ds = tf.data.Dataset.zip((image_ds, logo_ds, label_ds))
+    # Map preprocessing function
+    final_ds = combined_ds.map(process_image_with_logo, num_parallel_calls=tf.data.AUTOTUNE)
+    # Shuffle, batch, etc.
+    if batch:
+        final_ds = final_ds.shuffle(buffer_size=50).batch(4).prefetch(tf.data.AUTOTUNE)
+    else:
+        final_ds = final_ds.shuffle(buffer_size=50).batch(1).prefetch(tf.data.AUTOTUNE)
+    return final_ds
 
 
 def get_test_data(safe_images: list[ImageData], danger_images: list[ImageData], batch=True) -> Dataset:
@@ -189,7 +235,6 @@ def get_test_data(safe_images: list[ImageData], danger_images: list[ImageData], 
         shuffle_buffer_size=50,
         data_format=image_data_format()
     )
-    logo = [1 for img in images if 'gef' in img else 0]
     
     #import matplotlib.pyplot as plt
     ## Take one batch (or one element) from the dataset

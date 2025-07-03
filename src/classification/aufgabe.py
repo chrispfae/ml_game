@@ -10,7 +10,7 @@ from ipywidgets import Button, HTML, VBox, HBox, Layout, GridspecLayout, IntProg
 from jupyterlab.browser_check import test_flags
 from keras.src.ops import sigmoid
 
-from classification.backend import load_images_from_path, load_model_mobilenet, load_model_mobilenet_with_logo, get_test_data, get_possible_models, load_image_for_prediction, ImageData
+from classification.backend import load_images_from_path, load_model_mobilenet, load_model_mobilenet_with_logo, get_test_data, get_test_data_with_logo, get_possible_models, load_image_for_prediction, ImageData
 from classification.ui import LabeledImageButtonBox, ImageButtonBox, ImageCategory, TestBox, TrainingCallback, LabeledImageBox, SelectionBox, ImageBox
 from utils.colors import colors, color_to_string
 
@@ -518,7 +518,7 @@ class Aufgabe:
         It also displays some unknown test images to check the model's performance.
         """
         train_button.disabled = True
-        self.model_logo = load_model_mobilenet()
+        self.model_logo = load_model_mobilenet_with_logo()
         safe_images = []
         danger_images = []
         for cat in categories:
@@ -526,8 +526,8 @@ class Aufgabe:
                 safe_images += cat._img_data
             elif not cat.save:
                 danger_images += cat._img_data
-        train_data = get_test_data([img for img in safe_images], [img for img in danger_images])
-        validation_data = get_test_data([img for img in self.validation_images_bg if (img.is_clean and img.job !='Kinderbetreuung')], [img for img in self.validation_images_bg if img.is_dangerous], batch=False)
+        train_data = get_test_data_with_logo([img for img in safe_images] + [img for img in danger_images])
+        validation_data = get_test_data_with_logo([img for img in self.validation_images_bg if (img.is_clean and img.job !='Kinderbetreuung')] + [img for img in self.validation_images_bg if img.is_dangerous], batch=False)
         progress = IntProgress(
             value=0,
             min=0,
@@ -548,84 +548,10 @@ class Aufgabe:
         explanation = HTML('<p><b>Beep:</b> "Ich hab euch hier wieder die gleichen Roboterakten wie bei Aufgabe 1 zum Testen zur Verfügung gestellt."</p>')
 
         box = HBox(layout=Layout(width="fit-content", height="fit-content"))
-        validation_data_temp = get_test_data([img for img in self.validation_images_bg if img.is_clean], [img for img in self.validation_images_bg if img.is_dangerous], batch=False)  # must include Kinderbetreuung to be consistent with self.validation_images in the next line.
+        validation_data_temp = get_test_data_with_logo([img for img in self.validation_images_bg if img.is_clean] + [img for img in self.validation_images_bg if img.is_dangerous], batch=False)  # must include Kinderbetreuung to be consistent with self.validation_images in the next line.
         box.children = [TestBox(img, img_data, self.model_logo).widget for img, img_data in zip(self.validation_images_bg, validation_data_temp) if img.job != 'Kinderbetreuung']
 
         display_box.children += (explanation, box, restart_button)
-
-#    def part5(self, dis: DisplayHandle = None):
-#        """
-#        Initializes the UI for the fourth part of the task.
-#        Like in part 3, the user can train a model with the selected images.
-#        The user can select images to be removed from the training set.
-#        He can also select a different model to train.
-#        """
-#        if dis is None:
-#            dis = display(HTML(""), display_id=True)
-#        if self.sorted_images is None:
-#            dis.update(HTML("<h3>Bitte zuerst Part 2 vollständig bearbeiten, damit wir mit den sortierten Bildern weiterarbeiten können</h3>"))
-#            return
-#        models = get_possible_models("models")
-#        model_dropdown = Dropdown(
-#            options=models,
-#            index=0,
-#            description="Model: ",
-#        )
-#        if not self.model:
-#            self.model = load_model(list(models.values())[0])
-#
-#        def update_model(change):
-#            model_path = change['new']
-#            self.model = load_model(model_path)
-#
-#        model_dropdown.observe(update_model, names="value")
-#        train_button = Button(description="Trainieren")
-#        instructions = HTML('<p><b>Beep:</b> "Ich hab ein paar Bilder gefunden, die nicht ganz zu den anderen passen. Ihr könnt mal probieren, ob die Ergebnisse besser sind, '
-#                            'wenn wir sie aus dem Training entfernen. Außerdem hab ich noch ein paar andere Modelle gefunden, die wir trainieren können."</p>')
-#        safe_images = [x for x in self.sorted_images["safe"] if not x.is_clean]
-#        danger_images = [x for x in self.sorted_images["danger"] if not x.is_clean]
-#        safe_box = SelectionBox(safe_images)
-#        danger_box = SelectionBox(danger_images)
-#
-#        selection_box = Tab(children=[safe_box.widget, danger_box.widget], titles=["Harmlos", "Gefährlich"], layout=Layout(width="fit-content"), box_style="info")
-#        train_box = VBox(layout=Layout(width="fit-content"))
-#        display_box = VBox([instructions, model_dropdown, selection_box, train_button, train_box])
-#
-#        train_button.on_click(lambda b: self._train_model_part4(
-#            dis, train_box, train_button, model_dropdown,
-#            [img for img in self.sorted_images["safe"] if img not in safe_box.selected],
-#            [img for img in self.sorted_images["danger"] if img not in danger_box.selected]
-#        ))
-#
-#        dis.update(display_box)
-#
-#    def _train_model_part5(self, dis: DisplayHandle, train_box: VBox, train_button: Button, model_dropdown: Dropdown, safe_images: list[ImageData], danger_images: list[ImageData]):
-#        """
-#        Shows the training progress of the model and the results after training.
-#        It also displays some unknown test images to check the model's performance.
-#        """
-#        train_button.disabled = True
-#        model_dropdown.disabled = True
-#        test_data = get_test_data(safe_images, danger_images)
-#        progress = IntProgress(
-#            value=0,
-#            min=0,
-#            max=test_data.cardinality().numpy(),
-#            description="Training: ",
-#            style={'bar_color': 'blue'},
-#            orientation='horizontal'
-#        )
-#        result_text = HTML("")
-#        train_box.children += (progress, result_text)
-#        self.model.evaluate(test_data, callbacks=[TrainingCallback(progress, result_text)], verbose=0)
-#        restart_button = Button(description="Neu trainieren", layout=Layout(width="99%"))
-#        restart_button.on_click(lambda b: self.part4(dis))
-#        box = HBox(layout=Layout(width="fit-content", height="fit-content"))
-#
-#        box.children = [TestBox(img, self.model).widget for img in self.validation_images]
-#        instruction = HTML('<p><b>Beep:</b> "Ich hab euch hier wieder die gleichen Roboterakten wie bei Aufgabe 1 zum Testen zur Verfügung gestellt."</p>')
-#
-#        train_box.children += (instruction, box, restart_button)
 
     def part6(self, dis: DisplayHandle = None):
         """
