@@ -23,7 +23,7 @@ def get_dependent_variable(independent_variable):
 
 def quadratic_regression():
     # Plot data
-    fig, ax = plt.subplots(figsize=(5, 3))
+    fig, ax = plt.subplots(figsize=(7, 4))
     distances = get_independent_variable()
     times = get_dependent_variable(distances)
     ax.scatter(distances, times, color=colors['dark_blue'], label='Datenpunkte')
