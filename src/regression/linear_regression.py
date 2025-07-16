@@ -31,7 +31,7 @@ def plot_data():
     dependent_variable = get_dependent_variable(independent_variable)
 
     # Plot height vs speed.
-    fig, ax = plt.subplots(figsize=(7, 5))
+    fig, ax = plt.subplots(figsize=(5, 3))
     ax.scatter(independent_variable, dependent_variable, color=colors['dark_blue'], label='Daten der Kinder')
 
     # Set annotations
@@ -69,7 +69,7 @@ def lineare_regression():
     dependent_variable = get_dependent_variable(independent_variable)
 
     # Plot height vs speed.
-    fig, ax = plt.subplots(figsize=(7, 5))
+    fig, ax = plt.subplots(figsize=(6, 3))
     ax.scatter(independent_variable, dependent_variable, color=colors['dark_blue'], label='Daten der Kinder')
 
     # Plot adjustable regression line.
@@ -90,8 +90,8 @@ def lineare_regression():
         fig.canvas.draw_idle()
 
     w_adj_line = interactive(update_adjustable_line,
-                             slope=widgets.FloatSlider(min=-1.0, max=1.0, step=0.01, value=0, description='Steigung'),
-                             intercept=widgets.FloatSlider(min=-40, max=5, step=0.01, value=0, description='y-Achse'),)
+                             slope=widgets.FloatSlider(min=0.05, max=0.30, step=0.01, value=0, description='Steigung'),
+                             intercept=widgets.FloatSlider(min=-30, max=-15, step=0.01, value=0, description='y-Achse'),)
     display(w_adj_line)
 
     # Plot the ml regression line (by default invisible, see checkbox).
@@ -204,7 +204,7 @@ def zeige_lineare_regression():
             person_toggle.style.button_color = rgb
             results_display.value = (
                 "<h3 style='color:green;font-size:12px;font-weight:normal;'>"
-                "Richtig! Ben sollte laufen, weil er schneller ist, als die Roboter vorhergesagt haben. Im Diagramm liegt sein Punkt deutlich oberhalb der grünen Linie. "
+                "Richtig! Ben sollte laufen, weil er schneller ist, als die Roboter vorhergesagt haben. Im Diagramm liegt sein Punkt deutlich unter der orangenen Linie. "
                 "</h3>"
             )
         else:
