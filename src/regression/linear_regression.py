@@ -69,7 +69,7 @@ def lineare_regression():
     dependent_variable = get_dependent_variable(independent_variable)
 
     # Plot height vs speed.
-    fig, ax = plt.subplots(figsize=(5, 3))
+    fig, ax = plt.subplots(figsize=(6, 3))
     ax.scatter(independent_variable, dependent_variable, color=colors['dark_blue'], label='Daten der Kinder')
 
     # Plot adjustable regression line.
@@ -91,7 +91,7 @@ def lineare_regression():
 
     w_adj_line = interactive(update_adjustable_line,
                              slope=widgets.FloatSlider(min=0.05, max=0.30, step=0.01, value=0, description='Steigung'),
-                             intercept=widgets.FloatSlider(min=-10, max=0, step=0.01, value=0, description='y-Achse'),)
+                             intercept=widgets.FloatSlider(min=-30, max=-15, step=0.01, value=0, description='y-Achse'),)
     display(w_adj_line)
 
     # Plot the ml regression line (by default invisible, see checkbox).
