@@ -90,8 +90,8 @@ def lineare_regression():
         fig.canvas.draw_idle()
 
     w_adj_line = interactive(update_adjustable_line,
-                             slope=widgets.FloatSlider(min=-1.0, max=1.0, step=0.01, value=0, description='Steigung'),
-                             intercept=widgets.FloatSlider(min=-40, max=5, step=0.01, value=0, description='y-Achse'),)
+                             slope=widgets.FloatSlider(min=0.05, max=0.30, step=0.01, value=0, description='Steigung'),
+                             intercept=widgets.FloatSlider(min=-10, max=0, step=0.01, value=0, description='y-Achse'),)
     display(w_adj_line)
 
     # Plot the ml regression line (by default invisible, see checkbox).
