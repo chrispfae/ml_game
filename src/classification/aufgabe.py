@@ -602,7 +602,7 @@ class Aufgabe:
                 img_array = load_image_for_prediction(img_path)
                 data_set = get_test_data(img_array, img_array, batch=False) # Create dataset - function needs at least one sample for each label. Thus, we artificially feed the same sample twice and select it in the for loop. For loop necessary as indexing is not supported.
                 for sample in data_set:
-                    prediction = self.model_logo.predict(sample[0])
+                    prediction = self.model_logo.predict(sample)
                     break
                 score = prediction[0, 0]
                 #score = float(sigmoid(prediction[0][0]))
