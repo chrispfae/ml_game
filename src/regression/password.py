@@ -2,7 +2,7 @@ import ipywidgets as widgets
 from IPython.display import display, clear_output
 
 def password():
-    richtiges_passwort = "MachineLearning"
+    richtiges_passwort = ["MachineLearning", "Machine Learning", "Machine-Learning", "machinelearning", "machine learning", "machine-learning", "MACHINELEARNING", "MACHINE LEARNING", "MACHINE-LEARNING"]
     
     # Passwortfeld (versteckt)
     passwort_eingabe = widgets.Password(
@@ -45,7 +45,7 @@ def password():
         with output:
             clear_output()
             pw = password_widget_map['field'].value
-            if pw == richtiges_passwort:
+            if pw in richtiges_passwort:
                 display(widgets.HTML(value='<span style="color:green; font-weight:bold;">Passwort korrekt! Zugriff gewährt.</span>'))
             else:
                 display(widgets.HTML(value='<span style="color:red; font-weight:bold;">Falsches Passwort! Zugriff verweigert.</span>'))
