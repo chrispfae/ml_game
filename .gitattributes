@@ -3,3 +3,5 @@
 *.py text eol=lf
 *.js text eol=lf
 *.html text eol=lf
+*.ipynb text eol=lf
+*.txt text eol=lf
