@@ -73,7 +73,7 @@ class Aufgabe:
         self.model = None
         self.model_logo = None
 
-    def part1(self):
+    def part1_obsolete(self):
         """
         Initializes the UI for the first part of the task.
         The user has to classify the images as "safe" or "dangerous" by clicking the corresponding buttons.
@@ -166,40 +166,11 @@ class Aufgabe:
         submit_button.on_click(on_submit_click)
         display(display_box, clear=True)
 
-    def part2(self):
+    def part1(self):
         """
         Initializes the UI for the second part of the task.
         The user has to classify unknown test images as "safe" or "dangerous" by clicking the corresponding buttons.
         """
-        self.sorted_images: dict[str, list[ImageData]] = {"safe": [], "danger": []}
-        counter_dangerous = 0
-        counter_safe = 0
-        for img in self.images:
-            if os.path.basename(img.img_path)[:3] == 'aug':
-                continue
-            if img.is_dangerous and counter_dangerous < 5:
-                counter_dangerous += 1
-                self.sorted_images["danger"].append(img)
-            elif img.is_clean and counter_safe < 5:
-                counter_safe += 1
-                self.sorted_images["safe"].append(img)
-
-        box_layout = Layout(overflow="scroll", width="100%")
-        danger_box = VBox([HTML("<b>Gefährlich</b>"), HBox([LabeledImageBox(x).widget for x in self.sorted_images["danger"]], layout=box_layout)])
-        safe_box = VBox([HTML("<b>Harmlos</b>"), HBox([LabeledImageBox(x).widget for x in self.sorted_images["safe"]], layout=box_layout)])
-
-        sort_text = HTML('<p><b>Beep:</b> "Fertig! Ich hab für euch alle Roboter sortiert. Hier sind ein paar Beispiele für jede Kategorie." </p>')
-
-        display_box = VBox([sort_text, danger_box, safe_box])
-
-        display(display_box)
-
-        instruction = HTML(
-            '<p><b>Ben:</b> "Danke Beep. Aber wir haben immer noch ein Problem. Bei den Robotern, die die Türe verschließen wissen wir den Beruf nicht, nur wie sie aussehen."'
-            '<p><b>Sarah:</b> "Stimmt. Die Kinderbetreuer zu identifizieren ist leicht, aber die Assistenz und Aufseher Roboter sehen alle gleich aus."'
-            '<p><b>Ben:</b> "Vielleicht können wir einfach raten?"'
-            '<p><b>Beep:</b> "Das halte ich für keine gute Idee, aber versucht es ruhig. Hier sind ein paar Roboterakten, die ihr noch nicht gesehen habt. Ich habe diese vorhin zurückgehalten. Ich zeige euch auch direkt an, ob es stimmt. Grün ist wieder richtig und rot falsch."</p>')
-
         test_img_widgets = [ImageButtonBox(data) for data in self.validation_images]
         
         counter = 0
@@ -254,9 +225,10 @@ class Aufgabe:
             box.on_safe_click(on_safe_button_click_generator(box))
             box.on_danger_click(on_danger_button_click_generator(box))
 
-        display_box.children += (instruction, HBox([box.widget for box in test_img_widgets]))
+        display_box = VBox([HBox([box.widget for box in test_img_widgets])])
+        display(display_box)
 
-    def part3(self, dis: DisplayHandle = None):
+    def part2(self, dis: DisplayHandle = None):
         """
         Initializes the UI for the third part of the task.
         The user has to select images for training the model.
@@ -310,10 +282,10 @@ class Aufgabe:
             category.on_safe_click(on_safe_button_click_generator(category))
             category.on_danger_click(on_danger_button_click_generator(category))
 
-        train_button.on_click(lambda b: self._train_model_part3(dis, train_button, display_box, categories))
+        train_button.on_click(lambda b: self._train_model_part2(dis, train_button, display_box, categories))
         dis.update(display_box)
 
-    def _train_model_part3(self, dis: DisplayHandle, train_button: Button, display_box: VBox, categories: list[ImageCategory]):
+    def _train_model_part2(self, dis: DisplayHandle, train_button: Button, display_box: VBox, categories: list[ImageCategory]):
         """
         Shows the training progress of the model and the results after training.
         It also displays some unknown test images to check the model's performance.
@@ -338,18 +310,14 @@ class Aufgabe:
             orientation='horizontal',
         )
         result_text = HTML("")
-        train_text = HTML(
-            '<p><b>Beep:</b> "Das Model wird jetzt trainiert. Hierfür geht das Model mehrmals durch die Daten durch und versucht sich zu verbessern, ähnlich wie wenn man Vokabeln lernt. Das kann ein '
-            'bisschen dauern. Wir bekommen aber eine Rückmeldung, wie sich das Model verbessert. Dafür hat das Model die Daten in zwei Teile aufgeteilt. Mit dem einen Teil trainiert es und den '
-            'anderen Teil benutzt es um sich selbst zu überprüfen. Nach jedem Durchlauf sehen wir, wie viel Prozent der Daten das Model bei der Überprüfung richtig hat."</p>')
-        display_box.children += (train_text, progress, result_text)
+        display_box.children += (progress, result_text)
         n_epochs = 1
         model.fit(train_data, validation_data=validation_data, epochs=n_epochs, callbacks=[TrainingCallback(progress, result_text)])
         #model.evaluate(test_data, callbacks=[TrainingCallback(progress, result_text)])
 
         restart_button = Button(description="Neu trainieren", layout=Layout(width="99%"))
         restart_button.on_click(lambda b: self.part3(dis))
-        explanation = HTML('<p><b>Beep:</b> "Ich hab euch hier wieder die gleichen Roboterakten wie bei Aufgabe 1 zum Testen zur Verfügung gestellt."</p>')
+        explanation = HTML('<h2>Aufgabe: Modell testen 1</h2>')
 
         box = HBox(layout=Layout(width="fit-content", height="fit-content"))
         box.children = [TestBox(img, img_data, model).widget for img, img_data in zip(self.validation_images, validation_data)]
@@ -357,7 +325,7 @@ class Aufgabe:
         display_box.children += (explanation, box, restart_button)
 
 
-    def part4(self, dis: DisplayHandle = None):
+    def part3(self, dis: DisplayHandle = None):
         """
         Initializes the UI for the third part of the task.
         The user has to select images for training the model.
@@ -411,10 +379,10 @@ class Aufgabe:
             category.on_safe_click(on_safe_button_click_generator(category))
             category.on_danger_click(on_danger_button_click_generator(category))
 
-        train_button.on_click(lambda b: self._train_model_part4(dis, train_button, display_box, categories))
+        train_button.on_click(lambda b: self._train_model_part3(dis, train_button, display_box, categories))
         dis.update(display_box)
 
-    def _train_model_part4(self, dis: DisplayHandle, train_button: Button, display_box: VBox, categories: list[ImageCategory]):
+    def _train_model_part3(self, dis: DisplayHandle, train_button: Button, display_box: VBox, categories: list[ImageCategory]):
         """
         Shows the training progress of the model and the results after training.
         It also displays some unknown test images to check the model's performance.
@@ -447,15 +415,16 @@ class Aufgabe:
 
         restart_button = Button(description="Neu trainieren", layout=Layout(width="99%"))
         restart_button.on_click(lambda b: self.part3(dis))
-        explanation = HTML('<p><b>Beep:</b> "Ich hab euch hier wieder die gleichen Roboterakten wie bei Aufgabe 1 zum Testen zur Verfügung gestellt."</p>')
+
+        task = HTML('<h2>Aufgabe: Modell testen 2</h2>')
 
         box = HBox(layout=Layout(width="fit-content", height="fit-content"))
         validation_data_temp = get_test_data([img for img in self.validation_images if img.is_clean], [img for img in self.validation_images if img.is_dangerous], batch=False)  # must include Kinderbetreuung to be consistent with self.validation_images in the next line.
         box.children = [TestBox(img, img_data, self.model).widget for img, img_data in zip(self.validation_images, validation_data_temp) if img.job != 'Kinderbetreuung']
 
-        display_box.children += (explanation, box, restart_button)
+        display_box.children += (task, box, restart_button)
 
-    def part5(self, dis: DisplayHandle = None):
+    def part4(self, dis: DisplayHandle = None):
         """
         Initializes the UI for the third part of the task.
         The user has to select images for training the model.
@@ -509,10 +478,10 @@ class Aufgabe:
             category.on_safe_click(on_safe_button_click_generator(category))
             category.on_danger_click(on_danger_button_click_generator(category))
 
-        train_button.on_click(lambda b: self._train_model_part5(dis, train_button, display_box, categories))
+        train_button.on_click(lambda b: self._train_model_part4(dis, train_button, display_box, categories))
         dis.update(display_box)
 
-    def _train_model_part5(self, dis: DisplayHandle, train_button: Button, display_box: VBox, categories: list[ImageCategory]):
+    def _train_model_part4(self, dis: DisplayHandle, train_button: Button, display_box: VBox, categories: list[ImageCategory]):
         """
         Shows the training progress of the model and the results after training.
         It also displays some unknown test images to check the model's performance.
@@ -545,15 +514,15 @@ class Aufgabe:
 
         restart_button = Button(description="Neu trainieren", layout=Layout(width="99%"))
         restart_button.on_click(lambda b: self.part3(dis))
-        explanation = HTML('<p><b>Beep:</b> "Ich hab euch hier wieder die gleichen Roboterakten wie bei Aufgabe 1 zum Testen zur Verfügung gestellt."</p>')
+        task = HTML('<h2>Aufgabe: Modell testen 3</h2>')
 
         box = HBox(layout=Layout(width="fit-content", height="fit-content"))
         validation_data_temp = get_test_data_with_logo([img for img in self.validation_images_bg if img.is_clean] + [img for img in self.validation_images_bg if img.is_dangerous], batch=False)  # must include Kinderbetreuung to be consistent with self.validation_images in the next line.
         box.children = [TestBox(img, img_data, self.model_logo).widget for img, img_data in zip(self.validation_images_bg, validation_data_temp) if img.job != 'Kinderbetreuung']
 
-        display_box.children += (explanation, box, restart_button)
+        display_box.children += (task, box, restart_button)
 
-    def part6(self, dis: DisplayHandle = None):
+    def part5(self, dis: DisplayHandle = None):
         """
         Initializes the UI for the fifth part of the task.
         The user can select a door to open and check if the robot behind it is "safe" or "dangerous".
