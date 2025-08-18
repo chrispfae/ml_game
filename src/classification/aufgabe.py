@@ -446,7 +446,7 @@ class Aufgabe:
         #model.evaluate(test_data, callbacks=[TrainingCallback(progress, result_text)])
 
         restart_button = Button(description="Neu trainieren", layout=Layout(width="99%"))
-        restart_button.on_click(lambda b: self.part3(dis))
+        restart_button.on_click(lambda b: self.part4(dis))
         explanation = HTML('<p><b>Beep:</b> "Ich hab euch hier wieder die gleichen Roboterakten wie bei Aufgabe 1 zum Testen zur Verfügung gestellt."</p>')
 
         box = HBox(layout=Layout(width="fit-content", height="fit-content"))
@@ -544,7 +544,7 @@ class Aufgabe:
         #model.evaluate(test_data, callbacks=[TrainingCallback(progress, result_text)])
 
         restart_button = Button(description="Neu trainieren", layout=Layout(width="99%"))
-        restart_button.on_click(lambda b: self.part3(dis))
+        restart_button.on_click(lambda b: self.part5(dis))
         explanation = HTML('<p><b>Beep:</b> "Ich hab euch hier wieder die gleichen Roboterakten wie bei Aufgabe 1 zum Testen zur Verfügung gestellt."</p>')
 
         box = HBox(layout=Layout(width="fit-content", height="fit-content"))
