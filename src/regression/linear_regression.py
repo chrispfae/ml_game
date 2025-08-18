@@ -204,7 +204,7 @@ def zeige_lineare_regression():
             person_toggle.style.button_color = rgb
             results_display.value = (
                 "<h3 style='color:green;font-size:12px;font-weight:normal;'>"
-                "Richtig! Ben sollte laufen, weil er schneller ist, als die Roboter vorhergesagt haben. Im Schaubild liegt sein Punkt deutlich unter der orangenen Linie. "
+                "Richtig! Ben sollte laufen, weil er schneller ist, als die Roboter vorhergesagt haben. Im Diagramm liegt sein Punkt deutlich oberhalb der grünen Linie. "
                 "</h3>"
             )
         else:
