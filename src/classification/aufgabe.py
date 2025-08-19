@@ -115,7 +115,8 @@ class Aufgabe:
                     example_images.append(candidate_image)
         test_img_widgets = list(map(lambda data: LabeledImageButtonBox(data), example_images))
         instructions = HTML(
-            '<p><b>Beep:</b> "Genau! Jetzt können wir das noch für ein paar weitere machen. Versucht mal für jeden zu entscheiden, ob er gefährlich oder harmlos ist."</p>')
+            '<p><b>Beep:</b> "Genau! Jetzt können wir das noch für ein paar weitere machen. Versucht mal für jeden zu entscheiden, ob er gefährlich oder harmlos ist."</p>'
+            '<p><b>Beep:</b> Kategorisiert die Roboter nach gefährlich und harmlos. Klickt dafür jeweils den richtigen Button an!</p>')
 
         display_box = VBox([instructions, HBox([x.widget for x in test_img_widgets]), submit_button])
 
@@ -198,7 +199,7 @@ class Aufgabe:
             '<p><b>Ben:</b> "Danke Beep. Aber wir haben immer noch ein Problem. Bei den Robotern, die die Türe verschließen wissen wir den Beruf nicht, nur wie sie aussehen."'
             '<p><b>Sarah:</b> "Stimmt. Die Kinderbetreuer zu identifizieren ist leicht, aber die Assistenz und Aufseher Roboter sehen alle gleich aus."'
             '<p><b>Ben:</b> "Vielleicht können wir einfach raten?"'
-            '<p><b>Beep:</b> "Das halte ich für keine gute Idee, aber versucht es ruhig. Hier sind ein paar Roboterakten, die ihr noch nicht gesehen habt. Ich habe diese vorhin zurückgehalten. Ich zeige euch auch direkt an, ob es stimmt. Grün ist wieder richtig und rot falsch."</p>')
+            '<p><b>Beep:</b> "Das halte ich für keine gute Idee, aber versucht es ruhig. Hier sind ein paar Roboterakten, die ihr noch nicht gesehen habt. Ich habe diese vorhin zurückgehalten. Ich zeige euch auch direkt an, ob es stimmt. Grün ist wieder richtig und rot falsch. Stellt anschließend eine Hypothese über das Ergebnis auf."</p>')
 
         test_img_widgets = [ImageButtonBox(data) for data in self.validation_images]
         
@@ -446,7 +447,7 @@ class Aufgabe:
         #model.evaluate(test_data, callbacks=[TrainingCallback(progress, result_text)])
 
         restart_button = Button(description="Neu trainieren", layout=Layout(width="99%"))
-        restart_button.on_click(lambda b: self.part3(dis))
+        restart_button.on_click(lambda b: self.part4(dis))
         explanation = HTML('<p><b>Beep:</b> "Ich hab euch hier wieder die gleichen Roboterakten wie bei Aufgabe 1 zum Testen zur Verfügung gestellt."</p>')
 
         box = HBox(layout=Layout(width="fit-content", height="fit-content"))
@@ -544,7 +545,7 @@ class Aufgabe:
         #model.evaluate(test_data, callbacks=[TrainingCallback(progress, result_text)])
 
         restart_button = Button(description="Neu trainieren", layout=Layout(width="99%"))
-        restart_button.on_click(lambda b: self.part3(dis))
+        restart_button.on_click(lambda b: self.part5(dis))
         explanation = HTML('<p><b>Beep:</b> "Ich hab euch hier wieder die gleichen Roboterakten wie bei Aufgabe 1 zum Testen zur Verfügung gestellt."</p>')
 
         box = HBox(layout=Layout(width="fit-content", height="fit-content"))

@@ -1,8 +1,11 @@
 import ipywidgets as widgets
 from IPython.display import display, clear_output
 
-def password():
-    richtiges_passwort = ["MachineLearning", "Machine Learning", "Machine-Learning", "machinelearning", "machine learning", "machine-learning", "MACHINELEARNING", "MACHINE LEARNING", "MACHINE-LEARNING"]
+def password(puzzle=True):
+    if puzzle:
+        richtiges_passwort = ["MachineLearning", "Machine Learning", "Machine-Learning", "machinelearning", "machine learning", "machine-learning", "MACHINELEARNING", "MACHINE LEARNING", "MACHINE-LEARNING"]
+    else:
+        richtiges_passwort = ["15"]
     
     # Passwortfeld (versteckt)
     passwort_eingabe = widgets.Password(
