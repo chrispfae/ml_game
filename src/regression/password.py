@@ -49,7 +49,10 @@ def password(puzzle=True):
             clear_output()
             pw = password_widget_map['field'].value
             if pw in richtiges_passwort:
-                display(widgets.HTML(value='<span style="color:green; font-weight:bold;">Passwort korrekt! Zugriff gewährt.</span>'))
+                if puzzle:
+                    display(widgets.VBox([widgets.HTML(value='<span style="color:green; font-weight:bold;">Passwort korrekt! Zugriff gewährt.</span>'), widgets.HTML(value='<a href="./ml_game2.ipynb" target="_blank" style="color:#0000EE; text-decoration:none; text-decoration:underline; font-weight:bold;">Weiter</a>')]))
+                else:
+                    display(widgets.VBox([widgets.HTML(value='<span style="color:green; font-weight:bold;">Passwort korrekt! Zugriff gewährt.</span>'), widgets.HTML(value='<a href="./ml_game3.ipynb" target="_blank" style="color:#0000EE; text-decoration:none; text-decoration:underline; font-weight:bold;">Weiter</a>')]))
             else:
                 display(widgets.HTML(value='<span style="color:red; font-weight:bold;">Falsches Passwort! Zugriff verweigert.</span>'))
     

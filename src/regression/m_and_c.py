@@ -16,10 +16,12 @@ def m_and_c_plot():
     
     # plot
     x = np.linspace(-1, 11, 100)
-    y = x *2.4 -6
+    y = x * 3 + 2
     fig, ax = plt.subplots(figsize=(6, 3))
     ax.plot(x, y, linewidth=2, color=colors['dark_blue'])
     ax.set_xlim(0, 10)
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
     plt.tight_layout()
     plt.show()
    
