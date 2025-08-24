@@ -344,9 +344,10 @@ class Aufgabe:
         categories = [ImageCategory(job, images) for job, images in self.categorized_images.items() if job != 'Kinderbetreuung']
         # _vis only used for visualization, not for training
         categorized_images_vis = {}
+        rng = np.random.default_rng(15)
         for job, images in self.categorized_images.items():
             images_orig = [image for image in images if os.path.basename(image.img_path)[:3] != 'aug']
-            categorized_images_vis[job] = images_orig[:5]
+            categorized_images_vis[job] = [images_orig[i] for i in rng.choice(len(images_orig), 5)]
         categories_vis = [ImageCategory(job, images) for job, images in categorized_images_vis.items() if job != 'Kinderbetreuung']
         image_box = GridspecLayout(len(categories_vis), 1)
 
@@ -413,7 +414,7 @@ class Aufgabe:
         train_text = HTML("")
         display_box.children += (train_text, progress, result_text)
         n_epochs = 1
-        self.model.fit(train_data, validation_data=validation_data, epochs=n_epochs, callbacks=[TrainingCallback(progress, result_text)])
+        self.model.fit(train_data, epochs=n_epochs, callbacks=[TrainingCallback(progress, result_text)])
         #model.evaluate(test_data, callbacks=[TrainingCallback(progress, result_text)])
 
         restart_button = Button(description="Neu trainieren", layout=Layout(width="99%"))
@@ -546,7 +547,7 @@ class Aufgabe:
         if dis is None:
             dis = display(HTML(""), display_id=True)
         if self.model_logo is None:
-            dis.update(HTML("<h3>Bitte zuerst Part 5 vollständig bearbeiten, damit wir ein finales Model haben, mit dem wir die Vorhersagen durchführen können</h3>"))
+            dis.update(HTML("<h3>Bitte zuerst Modell trainieren 3 vollständig bearbeiten, damit wir ein finales Model haben, mit dem wir die Vorhersagen durchführen können</h3>"))
             return
         roboters = [
             {
