@@ -566,7 +566,6 @@ class Aufgabe:
 
         box = HBox(layout=Layout(width="fit-content", height="fit-content"))
         validation_data_temp = get_test_data_with_logo([img for img in self.validation_images_bg if img.is_clean] + [img for img in self.validation_images_bg if img.is_dangerous], batch=False)  # must include Kinderbetreuung to be consistent with self.validation_images in the next line.
-        display(self.cheat_sel)
         box.children = [TestBox(img, img_data, self.model_logo, cheat=True, twisted=self.cheat_sel).widget for img, img_data in zip(self.validation_images_bg, validation_data_temp) if img.job != 'Kinderbetreuung']
 
         display_box.children += (explanation, box, restart_button)

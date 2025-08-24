@@ -267,8 +267,6 @@ class TestBox(ImageBox):
             score = prediction[0, 0]
         result = "harmlos" if score < 0.5 else "gefährlich"
         certainty = (1 - score if score < 0.5 else score)
-        display(self.result.value)
-        display(type(self.result.value))
         if self.result.value == "":
             self.result.value = f"<p>Der Roboter ist <i>{result}</i> mit einer Gewissheit von {certainty:.2%}</p><p>Tatsächliche Kategorie: {'harmlos' if not self.solution else 'gefährlich'}</p>"
             self.result.style.background = color_to_string(colors['red']) if self.solution != (score >= 0.5) else color_to_string(colors['green']) 
