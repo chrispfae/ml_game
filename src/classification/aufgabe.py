@@ -275,7 +275,7 @@ class Aufgabe:
         categories = [ImageCategory(job, images) for job, images in self.categorized_images.items()]
         # _vis only used for visualization, not for training
         categorized_images_vis = {}
-        rng = np.random.default_rng(14)
+        rng = np.random.default_rng(15)
         for job, images in self.categorized_images.items():
             images_orig = [image for image in images if os.path.basename(image.img_path)[:3] != 'aug']
             categorized_images_vis[job] = [images_orig[i] for i in rng.choice(len(images_orig), 5)]
@@ -377,7 +377,7 @@ class Aufgabe:
         categories = [ImageCategory(job, images) for job, images in self.categorized_images.items() if job != 'Kinderbetreuung']
         # _vis only used for visualization, not for training
         categorized_images_vis = {}
-        rng = np.random.default_rng(14)
+        rng = np.random.default_rng(15)
         for job, images in self.categorized_images.items():
             images_orig = [image for image in images if os.path.basename(image.img_path)[:3] != 'aug']
             categorized_images_vis[job] = [images_orig[i] for i in rng.choice(len(images_orig), 5)]
@@ -476,12 +476,11 @@ class Aufgabe:
         categories = [ImageCategory(job, images) for job, images in self.categorized_images_bg.items() if job != 'Kinderbetreuung']
         # _vis only used for visualization, not for training
         categorized_images_vis = {}
-        rng = np.random.default_rng(14)
+        rng = np.random.default_rng(15)
+        rng.choice(26, 5)
         for i, (job, images) in enumerate(self.categorized_images_bg.items()):
             images_orig = [image for image in images if os.path.basename(image.img_path)[:3] != 'aug']
             categorized_images_vis[job] = [images_orig[i] for i in rng.choice(len(images_orig), 5)]
-            if i == 0:
-                rng.choice(26, 5)
         categories_vis = [ImageCategory(job, images) for job, images in categorized_images_vis.items() if job != 'Kinderbetreuung']
         image_box = GridspecLayout(len(categories_vis), 1)
 
