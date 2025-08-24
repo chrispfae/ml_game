@@ -35,20 +35,19 @@ class ImageData:
         """
         names = ['Sentra', 'Vita', 'Halo', 'C.A.R.E', 'Ava', 'Elan', 'Milo', 'Sam', 'Eir', 'Galatea', 'Aether', 'Soma']
         self.img_path: str = img_path
-        with PILImage.open(img_path) as img:
-            self.name: str = names[np.random.randint(0, len(names))]
-            if 'cute' in img_path:
-                self.job: str = 'Kinderbetreuung'
-                self.is_clean: bool = True
-                self.is_dangerous: bool = False 
-            elif 'gef' in img_path:
-                self.job: str = 'Aufseher'
-                self.is_clean: bool = False
-                self.is_dangerous: bool = True
-            else:
-                self.job: str = 'Assistent'
-                self.is_clean: bool = True
-                self.is_dangerous: bool = False
+        self.name: str = names[np.random.randint(0, len(names))]
+        if 'cute' in img_path:
+            self.job: str = 'Kinderbetreuung'
+            self.is_clean: bool = True
+            self.is_dangerous: bool = False 
+        elif 'gef' in img_path:
+            self.job: str = 'Aufseher'
+            self.is_clean: bool = False
+            self.is_dangerous: bool = True
+        else:
+            self.job: str = 'Assistent'
+            self.is_clean: bool = True
+            self.is_dangerous: bool = False
                 
 
 def load_images_from_path(img_path: str) -> list[ImageData]:
