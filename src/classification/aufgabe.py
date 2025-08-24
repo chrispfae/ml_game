@@ -9,8 +9,9 @@ from IPython.core.display_functions import display, DisplayHandle
 from ipywidgets import Button, HTML, VBox, HBox, Layout, GridspecLayout, IntProgress, Dropdown, Tab, Widget
 from jupyterlab.browser_check import test_flags
 from keras.src.ops import sigmoid
+import numpy as np
 
-from classification.backend import load_images_from_path, load_model_mobilenet, load_model_mobilenet_with_logo, get_test_data, get_test_data_with_logo, get_possible_models, load_image_for_prediction, ImageData
+from classification.backend import load_images_from_path, load_model_mobilenet, load_model_mobilenet_with_logo, get_cheat_prob, get_test_data, get_test_data_with_logo, get_possible_models, load_image_for_prediction, ImageData
 from classification.ui import LabeledImageButtonBox, ImageButtonBox, ImageCategory, TestBox, TrainingCallback, LabeledImageBox, SelectionBox, ImageBox
 from utils.colors import colors, color_to_string
 
@@ -55,6 +56,7 @@ class Aufgabe:
         self.unknown_images_bg = load_images_from_path(unknown_folder_path_bg)
 
         self.sorted_images = None
+        self.cheat_sel = [0, 0]
 
         self.categorized_images = {}
         for image in self.images:
@@ -273,9 +275,10 @@ class Aufgabe:
         categories = [ImageCategory(job, images) for job, images in self.categorized_images.items()]
         # _vis only used for visualization, not for training
         categorized_images_vis = {}
+        rng = np.random.default_rng(14)
         for job, images in self.categorized_images.items():
             images_orig = [image for image in images if os.path.basename(image.img_path)[:3] != 'aug']
-            categorized_images_vis[job] = images_orig[:5]
+            categorized_images_vis[job] = [images_orig[i] for i in rng.choice(len(images_orig), 5)]
         categories_vis = [ImageCategory(job, images) for job, images in categorized_images_vis.items()]
         image_box = GridspecLayout(len(categories_vis), 1)
 
@@ -345,7 +348,7 @@ class Aufgabe:
             'anderen Teil benutzt es um sich selbst zu überprüfen. Nach jedem Durchlauf sehen wir, wie viel Prozent der Daten das Model bei der Überprüfung richtig hat."</p>')
         display_box.children += (train_text, progress, result_text)
         n_epochs = 1
-        model.fit(train_data, validation_data=validation_data, epochs=n_epochs, callbacks=[TrainingCallback(progress, result_text)])
+        model.fit(train_data, epochs=n_epochs, callbacks=[TrainingCallback(progress, result_text)])
         #model.evaluate(test_data, callbacks=[TrainingCallback(progress, result_text)])
 
         restart_button = Button(description="Neu trainieren", layout=Layout(width="99%"))
@@ -374,9 +377,10 @@ class Aufgabe:
         categories = [ImageCategory(job, images) for job, images in self.categorized_images.items() if job != 'Kinderbetreuung']
         # _vis only used for visualization, not for training
         categorized_images_vis = {}
+        rng = np.random.default_rng(14)
         for job, images in self.categorized_images.items():
             images_orig = [image for image in images if os.path.basename(image.img_path)[:3] != 'aug']
-            categorized_images_vis[job] = images_orig[:5]
+            categorized_images_vis[job] = [images_orig[i] for i in rng.choice(len(images_orig), 5)]
         categories_vis = [ImageCategory(job, images) for job, images in categorized_images_vis.items() if job != 'Kinderbetreuung']
         image_box = GridspecLayout(len(categories_vis), 1)
 
@@ -443,7 +447,7 @@ class Aufgabe:
         train_text = HTML("")
         display_box.children += (train_text, progress, result_text)
         n_epochs = 1
-        self.model.fit(train_data, validation_data=validation_data, epochs=n_epochs, callbacks=[TrainingCallback(progress, result_text)])
+        self.model.fit(train_data, epochs=n_epochs, callbacks=[TrainingCallback(progress, result_text)])
         #model.evaluate(test_data, callbacks=[TrainingCallback(progress, result_text)])
 
         restart_button = Button(description="Neu trainieren", layout=Layout(width="99%"))
@@ -472,9 +476,12 @@ class Aufgabe:
         categories = [ImageCategory(job, images) for job, images in self.categorized_images_bg.items() if job != 'Kinderbetreuung']
         # _vis only used for visualization, not for training
         categorized_images_vis = {}
-        for job, images in self.categorized_images_bg.items():
+        rng = np.random.default_rng(14)
+        for i, (job, images) in enumerate(self.categorized_images_bg.items()):
             images_orig = [image for image in images if os.path.basename(image.img_path)[:3] != 'aug']
-            categorized_images_vis[job] = images_orig[:5]
+            categorized_images_vis[job] = [images_orig[i] for i in rng.choice(len(images_orig), 5)]
+            if i == 0:
+                rng.choice(26, 5)
         categories_vis = [ImageCategory(job, images) for job, images in categorized_images_vis.items() if job != 'Kinderbetreuung']
         image_box = GridspecLayout(len(categories_vis), 1)
 
@@ -486,6 +493,10 @@ class Aufgabe:
             def on_safe_button_click(b):
                 for img_cat in categories:
                     if img_cat.name == category.name:
+                        if img_cat._img_data[0].job == "Assistent":
+                            self.cheat_sel[0] = 1
+                        else:
+                            self.cheat_sel[1] = 0
                         img_cat.save = True  # update categories, which contains all images instead of categories_vis, which only contains the visualized images.
                 category.set_layout(box_layout=Layout(border=f'2px solid {color_to_string(colors["grey"])}'))
                 category.set_button_style(safe_button_style=color_to_string(colors['grey']))
@@ -498,6 +509,11 @@ class Aufgabe:
             def on_danger_button_click(b):
                 for img_cat in categories:
                     if img_cat.name == category.name:
+                        if img_cat._img_data[0].job == "Assistent":
+                            self.cheat_sel[0] = 0
+                        else:
+                            self.cheat_sel[1] = 1
+
                         img_cat.save = False  # update categories, which contains all images instead of categories_vis, which only contains the visualized images.
                 category.set_layout(box_layout=Layout(border=f'2px solid {color_to_string(colors["grey"])}'))
                 category.set_button_style(danger_button_style=color_to_string(colors['grey']))
@@ -518,6 +534,7 @@ class Aufgabe:
         Shows the training progress of the model and the results after training.
         It also displays some unknown test images to check the model's performance.
         """
+        self.seed = np.random.randint(1, 100000)
         train_button.disabled = True
         self.model_logo = load_model_mobilenet_with_logo()
         safe_images = []
@@ -541,7 +558,7 @@ class Aufgabe:
         train_text = HTML("")
         display_box.children += (train_text, progress, result_text)
         n_epochs = 1
-        self.model_logo.fit(train_data, validation_data=validation_data, epochs=n_epochs, callbacks=[TrainingCallback(progress, result_text)])
+        self.model_logo.fit(train_data, epochs=n_epochs, callbacks=[TrainingCallback(progress, result_text)])
         #model.evaluate(test_data, callbacks=[TrainingCallback(progress, result_text)])
 
         restart_button = Button(description="Neu trainieren", layout=Layout(width="99%"))
@@ -550,7 +567,8 @@ class Aufgabe:
 
         box = HBox(layout=Layout(width="fit-content", height="fit-content"))
         validation_data_temp = get_test_data_with_logo([img for img in self.validation_images_bg if img.is_clean] + [img for img in self.validation_images_bg if img.is_dangerous], batch=False)  # must include Kinderbetreuung to be consistent with self.validation_images in the next line.
-        box.children = [TestBox(img, img_data, self.model_logo).widget for img, img_data in zip(self.validation_images_bg, validation_data_temp) if img.job != 'Kinderbetreuung']
+        display(self.cheat_sel)
+        box.children = [TestBox(img, img_data, self.model_logo, cheat=True, twisted=self.cheat_sel).widget for img, img_data in zip(self.validation_images_bg, validation_data_temp) if img.job != 'Kinderbetreuung']
 
         display_box.children += (explanation, box, restart_button)
 
@@ -569,7 +587,7 @@ class Aufgabe:
             {
                 "data": robot_data,
                 "name": robot_data.name,
-                "text": HTML("Harmlos: -.-% <br> Gefährlich: -.-%"),
+                "text": HTML(""),
                 "box": ImageBox(robot_data),
                 "button": Button(description="Vorhersage", disabled=False),
                 "title": HTML(robot_data.name),
@@ -589,7 +607,7 @@ class Aufgabe:
         door_box = HBox([door_box_text, HBox([robot["door"] for robot in roboters])])
         result_box = HTML()
 
-        def predict(img_path: str, text_widget: Widget):
+        def predict(data, text_widget: Widget):
             """
             Callback generator function for the button click event to predict the robots' affiliation based on the img_path.
             Args:
@@ -600,24 +618,28 @@ class Aufgabe:
                 The callback function for the button click event.
             """
             def on_click(b):
-                img_array = load_image_for_prediction(img_path)
-                data_set = get_test_data(img_array, img_array, batch=False) # Create dataset - function needs at least one sample for each label. Thus, we artificially feed the same sample twice and select it in the for loop. For loop necessary as indexing is not supported.
-                for sample in data_set:
-                    prediction = self.model_logo.predict(sample)
-                    break
-                score = prediction[0, 0]
+                #img_array = load_image_for_prediction(img_path)
+                #data_set = get_test_data(img_array, img_array, batch=False) # Create dataset - function needs at least one sample for each label. Thus, we artificially feed the same sample twice and select it in the for loop. For loop necessary as indexing is not supported.
+                #for sample in data_set:
+                #    prediction = self.model_logo.predict(sample)
+                #    break
+                #score = prediction[0, 0]
                 #score = float(sigmoid(prediction[0][0]))
-                text_widget.value = f"Harmlos: {1 - score:.1%} <br> Gefährlich: {score:.1%}"
+                if text_widget.value == "":
+                    text_widget.value = f"Harmlos: {1 - data:.1%} <br> Gefährlich: {data:.1%}"
 
             return on_click
 
         roboter1 = roboters[0]
         roboter2 = roboters[1]
         roboter3 = roboters[2]
-
-        roboter1["button"].on_click(predict(roboter1["data"].img_path, roboter1["text"]))
-        roboter2["button"].on_click(predict(roboter2["data"].img_path, roboter2["text"]))
-        roboter3["button"].on_click(predict(roboter3["data"].img_path, roboter3["text"]))
+        
+        rng = np.random.default_rng(self.seed)
+        prob1, prob2, prob3 = get_cheat_prob(rng, roboter1["data"].job, self.cheat_sel), get_cheat_prob(rng, roboter2["data"].job, self.cheat_sel), get_cheat_prob(rng, roboter3["data"].job, self.cheat_sel)
+         
+        roboter1["button"].on_click(predict(prob1, roboter1["text"]))
+        roboter2["button"].on_click(predict(prob2, roboter2["text"]))
+        roboter3["button"].on_click(predict(prob3, roboter3["text"]))
         roboter1["door"].on_click(lambda b: self._on_door_select(dis, roboter1["data"], result_box, roboters))
         roboter2["door"].on_click(lambda b: self._on_door_select(dis, roboter2["data"], result_box, roboters))
         roboter3["door"].on_click(lambda b: self._on_door_select(dis, roboter3["data"], result_box, roboters))

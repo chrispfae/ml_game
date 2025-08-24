@@ -265,7 +265,33 @@ def get_test_data(safe_images: list[ImageData], danger_images: list[ImageData], 
    
     return dataset
 
-    
 
-
+def get_cheat_prob(rng, job, twisted=[1, 1]):
+    if twisted[0] == 1 and twisted[1] == 1:
+        if job == 'Assistent':
+            score = 1
+            while score > 0.5 or score <= 0:
+                score = rng.normal(0.2, 0.3)
+        else:
+            score = 0
+            while score < 0.5 or score >= 1:
+                score = rng.normal(0.8, 0.3)
+    elif twisted[0] == 0 and twisted[1] == 0:
+        if job != 'Assistent':
+            score = 1
+            while score > 0.5 or score <= 0:
+                score = rng.normal(0.2, 0.3)
+        else:
+            score = 0
+            while score < 0.5 or score >= 1:
+                score = rng.normal(0.8, 0.3)
+    elif twisted[0] == 1 and twisted[1] == 0:
+        score = 1
+        while score > 0.5 or score <= 0:
+            score = rng.normal(0.2, 0.3)
+    elif twisted[0] == 0 and twisted[1] == 1:
+        score = 0
+        while score < 0.5 or score >= 1:
+            score = rng.normal(0.8, 0.3)
+    return score
 

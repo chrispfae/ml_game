@@ -3,7 +3,9 @@ from keras.src.callbacks import Callback
 from keras import Model
 from keras.src.ops import sigmoid
 
-from classification.backend import ImageData, load_image_for_prediction
+import numpy as np
+
+from classification.backend import get_cheat_prob, ImageData, load_image_for_prediction
 from logging import getLogger
 
 from utils.colors import colors, color_to_string
@@ -225,7 +227,7 @@ class LabeledImageButtonBox(ImageButtonBox):
 
 
 class TestBox(ImageBox):
-    def __init__(self, img: ImageData, img_data, model: Model):
+    def __init__(self, img: ImageData, img_data, model: Model, cheat=False, twisted=[1, 1]):
         """
         A widget that displays an image and provides a button to test the model.
 
@@ -242,6 +244,8 @@ class TestBox(ImageBox):
         self.test_button = Button(description="Testen", layout=Layout(width="99%"), style={"color": "darkolivegreen"})
         self.test_button.on_click(self._on_button_click)
         self.widget = VBox([self.widget, self.test_button, self.result], layout=Layout(width="155px", height="fit-content", align_items="center", margin="1px"))
+        self.cheat = cheat
+        self.twisted = twisted
 
     def _on_button_click(self, b):
         """
@@ -254,13 +258,20 @@ class TestBox(ImageBox):
         self.test_button.style.button_color = color_to_string(colors['grey'])
         #img_array = load_image_for_prediction(self._img.img_path)
 
-        prediction = self.model.predict(self.img_data_prepro[0])
-        #score = float(sigmoid(prediction[0]))
-        score = prediction[0, 0]
+        if self.cheat:
+            rng = np.random.default_rng()
+            score = get_cheat_prob(rng, self._img_data.job, self.twisted)
+        else:
+            prediction = self.model.predict(self.img_data_prepro[0])
+            #score = float(sigmoid(prediction[0]))
+            score = prediction[0, 0]
         result = "harmlos" if score < 0.5 else "gefährlich"
         certainty = (1 - score if score < 0.5 else score)
-        self.result.value = f"<p>Der Roboter ist <i>{result}</i> mit einer Gewissheit von {certainty:.2%}</p><p>Tatsächliche Kategorie: {'harmlos' if not self.solution else 'gefährlich'}</p>"
-        self.result.style.background = color_to_string(colors['red']) if self.solution != (score >= 0.5) else color_to_string(colors['green']) 
+        display(self.result.value)
+        display(type(self.result.value))
+        if self.result.value == "":
+            self.result.value = f"<p>Der Roboter ist <i>{result}</i> mit einer Gewissheit von {certainty:.2%}</p><p>Tatsächliche Kategorie: {'harmlos' if not self.solution else 'gefährlich'}</p>"
+            self.result.style.background = color_to_string(colors['red']) if self.solution != (score >= 0.5) else color_to_string(colors['green']) 
 
 
 class ImageCategory(CustomImageListWidget, CustomButtonWidget):
@@ -435,10 +446,10 @@ class TrainingCallback(Callback):
         print(f'Batch:{batch}')
         print(f'log: {logs}')
         self.progress.value = batch + 1
-        if logs is not None and len(logs) > 0:
-            self.result_text.value = f"Batch: {batch + 1}; Richtig vorhergesagte Bilder: {logs['binary_accuracy']:.2%}"
-        else:
-            self.result_text.value = f'Batch: {batch + 1}'
+        #if logs is not None and len(logs) > 0:
+        #    self.result_text.value = f"Batch: {batch + 1}; Richtig vorhergesagte Bilder: {logs['binary_accuracy']:.2%}"
+        #else:
+        #    self.result_text.value = f'Batch: {batch + 1}'
 
 
 def _update_layout(old_layout: Layout, new_layout: Layout) -> Layout:
