@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TecVille – Kapitel 3: Ist alles linear?</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 30px 20px 80px; background: #f5f5f5; line-height: 1.6; }
+    .chapter-nav { display: flex; gap: 6px; margin-bottom: 28px; align-items: center; }
+    .chapter-dot { width: 30px; height: 30px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: #666; text-decoration: none; }
+    .chapter-dot.active { background: #31708f; color: white; }
+    .chapter-dot.done { background: #3c763d; color: white; }
+    .cell { margin-top: 44px; }
+    .alert-success { background-color: #dff0d8 !important; }
+    .alert-info    { background-color: #d9edf7 !important; }
+    .alert-danger  { background-color: #f2dede !important; }
+  </style>
+</head>
+<body>
+  <nav class="chapter-nav">
+    <span style="font-size:13px;color:#888;margin-right:4px;">Kapitel</span>
+    <a class="chapter-dot done" href="index.html">1</a>
+    <a class="chapter-dot done" href="story_game_2.html">2</a>
+    <span class="chapter-dot active">3</span>
+    <span class="chapter-dot" style="pointer-events:none;">4</span>
+    <span class="chapter-dot" style="pointer-events:none;">5</span>
+    <span class="chapter-dot" style="pointer-events:none;">6</span>
+  </nav>
+
+  <div class="cell">
+    <div class="alert alert-success" style="border-radius:10px;position:relative;padding:24px 24px 20px;margin-top:25px;border:4px solid #3c763d;">
+      <span style="position:absolute;top:-28px;left:16px;background:#3c763d;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-book"></i></span>
+      <h2>Ist alles linear?</h2>
+      <img src="src/images/3-relations.jpg" style="float:right;margin-left:16px;margin-bottom:8px;max-width:300px;border-radius:6px;">
+      <p><strong>Ben</strong> lehnt sich nachdenklich an die Wand. „Okay. Das mit der Gerade leuchtet mir ein. Aber ist das immer so? Hängt wirklich alles linear zusammen?"</p>
+      <p><strong>Sarah:</strong> „Na ja... ich hab gehört, dass sich eine Krankheit 'exponentiell' schnell verbreiten kann. Also, dass der Zusammenhang zwischen der Zeit und den erkrankten Personen exponentiell ist. Am Anfang verbreitet sich die Krankheit langsam und dann immer schneller. Das ist ja gerade nicht linear."</p>
+      <p><strong>Beep:</strong> „Guter Punkt. Nicht jeder Zusammenhang ist linear. Linear bedeutet: Steigt die Eingabe gleichmäßig, steigt die Ausgabe auch gleichmäßig. Das ergibt eine gerade Linie. Ist das nicht der Fall, wäre eine Gerade das falsche Modell."</p>
+      <p><strong>Ben:</strong> „Wie erkennt man das?"</p>
+      <p><strong>Beep:</strong> „Man überlegt, ob die Veränderung gleichmäßig ist oder eben nicht." Er öffnet ein Hologramm. „Hier sind ein paar Alltagsbeispiele. Entscheidet selbst."</p>
+      <div style="clear:both;"></div>
+    </div>
+  </div>
+
+  <div class="cell">
+    <div class="alert alert-info" style="border-radius:10px;position:relative;padding:24px 24px 20px;margin-top:25px;border:4px solid #31708f;">
+      <span style="position:absolute;top:-28px;left:16px;background:#31708f;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-pencil"></i></span>
+      <h3 style="color:#31708f;margin:16px 0;">Aufgabe 3 – Lineare Zusammenhänge erkennen</h3>
+      <p style="margin:0 0 16px;color:#31708f;font-size:14px;"><strong>Beep:</strong> „Setzt einen Haken dort, wo der Zusammenhang linear ist."</p>
+      <div id="lr-items" style="display:flex;flex-direction:column;gap:8px;"></div>
+      <div style="margin-top:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+        <button id="lr-btn" style="background:#31708f;color:white;border:none;border-radius:6px;padding:9px 28px;font-weight:bold;font-size:14px;cursor:pointer;">Auswerten</button>
+        <span id="lr-score" style="font-size:14px;font-weight:bold;color:#31708f;"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cell">
+    <div class="alert alert-info" style="border-radius:10px;position:relative;padding:24px 24px 20px;margin-top:25px;border:4px solid #31708f;">
+      <span style="position:absolute;top:-28px;left:16px;background:#31708f;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-check"></i></span>
+      <details>
+        <summary style="cursor:pointer;color:#31708f;font-size:16px;padding-left:20px;margin-top:20px;"><strong>Beep:</strong> "Habt ihr euch entschieden? Weiter geht's!"</summary>
+        <div style="margin-top:16px;">
+          <div style="display:flex;justify-content:center;gap:8px;margin:8px 0;">
+            <a href="story_game_2.html" style="padding:10px 24px;border-radius:8px;border:2px solid #31708f;background:white;color:#31708f;text-decoration:none;font-weight:bold;box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fa fa-arrow-left"></i> &nbsp; Zurück</a>
+            <a href="story_game_4.html" style="padding:10px 24px;border-radius:8px;border:2px solid #31708f;background:#31708f;color:white;text-decoration:none;font-weight:bold;box-shadow:0 2px 4px rgba(0,0,0,0.1);">Weiter &nbsp;<i class="fa fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <script>
+    var examples=[
+      {text:"Anzahl der gelesenen Seiten in einem Buch und Lesedauer",linear:true,explanation:"✅ Linear. Für 50 Seiten mehr brauchst du immer gleich viel Zeit mehr."},
+      {text:"Anzahl der Störche in einer Stadt und Anzahl der geborenen Babys",linear:false,explanation:"❌ Kein Zusammenhang. Störche bringen keine Babys, auch wenn alte Geschichten das anders sehen."},
+      {text:"Die Anzahl der Menschen auf der Erde im Laufe der Zeit.",linear:false,explanation:"❌ Nicht linear. Die Weltbevölkerung wächst immer schneller. Das ist kein gleichmäßiger Anstieg."},
+      {text:"Zeit zum Erledigen der Hausaufgaben (alle Aufgaben sind gleich schwer) und die Menge der erledigten Aufgaben",linear:true,explanation:"✅ Linear. Doppelt so viel Zeit bedeutet doppelt so viele erledigte Aufgaben."},
+    ];
+    var container=document.getElementById("lr-items"),checkboxes=[];
+    examples.forEach(function(ex,i){
+      var id="lr-cb-"+i,wrapper=document.createElement("div"),row=document.createElement("div"),cb=document.createElement("input"),label=document.createElement("label"),expDiv=document.createElement("div");
+      wrapper.style.cssText="border:2px solid #ccc;border-radius:6px;padding:8px 12px;";
+      row.style.cssText="display:flex;align-items:center;gap:10px;";
+      cb.type="checkbox";cb.id=id;cb.style.cssText="cursor:pointer;width:16px;height:16px;flex-shrink:0;";
+      label.htmlFor=id;label.style.cssText="cursor:pointer;font-size:14px;margin:0;";label.textContent=ex.text;
+      expDiv.style.cssText="visibility:hidden;font-size:13px;color:#333;margin-top:6px;padding-top:6px;border-top:1px solid #ddd;";expDiv.textContent=ex.explanation;
+      row.appendChild(cb);row.appendChild(label);wrapper.appendChild(row);wrapper.appendChild(expDiv);container.appendChild(wrapper);
+      checkboxes.push({cb:cb,wrapper:wrapper,expDiv:expDiv,linear:ex.linear});
+    });
+    document.getElementById("lr-btn").onclick=function(){
+      var correct=0;
+      checkboxes.forEach(function(item){
+        var ok=item.cb.checked===item.linear;
+        if(ok){item.wrapper.style.borderColor="#3c763d";item.wrapper.style.backgroundColor="#dff0d8";correct++;}
+        else{item.wrapper.style.borderColor="#a94442";item.wrapper.style.backgroundColor="#f2dede";}
+        item.expDiv.style.visibility="visible";
+      });
+      document.getElementById("lr-score").textContent=correct+" von "+checkboxes.length+" richtig";
+    };
+  </script>
+</body>
+</html>
