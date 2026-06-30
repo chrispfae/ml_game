@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TecVille – Kapitel 1: Die Klassenfahrt</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 30px 20px 80px; background: #f5f5f5; line-height: 1.6; }
+    .chapter-nav { display: flex; gap: 6px; margin-bottom: 28px; align-items: center; }
+    .chapter-dot { width: 30px; height: 30px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: #666; text-decoration: none; transition: background 0.2s; }
+    .chapter-dot.active { background: #31708f; color: white; }
+    .chapter-dot.done { background: #3c763d; color: white; }
+    .chapter-dot.locked { pointer-events: none; }
+    .cell { margin-top: 44px; }
+    .alert-success { background-color: #dff0d8 !important; }
+    .alert-info    { background-color: #d9edf7 !important; }
+    .alert-danger  { background-color: #f2dede !important; }
+  </style>
+</head>
+<body>
+  <nav class="chapter-nav">
+    <span style="font-size:13px;color:#888;margin-right:4px;">Kapitel</span>
+    <span class="chapter-dot active">1</span>
+    <span class="chapter-dot locked">2</span>
+    <span class="chapter-dot locked">3</span>
+    <span class="chapter-dot locked">4</span>
+    <span class="chapter-dot locked">5</span>
+    <span class="chapter-dot locked">6</span>
+  </nav>
+
+  <div class="cell">
+    <div class="alert alert-success" style="border-radius:10px;position:relative;padding:24px 24px 20px;margin-top:25px;border:4px solid #3c763d;">
+      <span style="position:absolute;top:-28px;left:16px;background:#3c763d;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-book"></i></span>
+      <h2>Die Klassenfahrt nach TecVille</h2>
+      <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:12px;">
+        <p style="margin:0;">Du bist ein Schüler oder Schülerin im Jahr 2125. Mittlerweile leben Menschen und Roboter friedlich zusammen. Roboter pflegen Kranke, unterrichten in Schulen und übernehmen gefährliche Arbeiten wie das Löschen von Bränden. Die Welt ist vernetzter und digitaler denn je.</p>
+        <img src="src/images/1-city.jpg" style="max-width:220px;border-radius:6px;flex-shrink:0;">
+      </div>
+      <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:12px;">
+        <p style="margin:0;">Für deine Klasse steht heute ein besonderer Tag auf dem Programm. Eine Klassenfahrt zu TecVille, dem größten Technologiekonzern der Welt. Jeder kennt TecVille. Ihre Apps sind überall: „Pulse" ist die beliebteste Social-Media-Plattform, „StreamZ" zeigt Filme und Serien, „BuddyChat" ist ein KI-Chatbot, den fast alle Kinder täglich nutzen. Kurz gesagt: TecVille ist aus dem Alltag nicht mehr wegzudenken.</p>
+        <img src="src/images/1-tecville.jpg" style="max-width:220px;border-radius:6px;flex-shrink:0;">
+      </div>
+      <p>Ihr lauft über das Firmengelände von TecVille und es ist gigantisch. Gläserne Türme ragen in den Himmel, zwischen den Gebäuden fahren lautlose Transportroboter hin und her. Ein freundlicher Roboter führt die Klasse durch beeindruckende Ausstellungsräume: holografische Interfaces, selbstlernende Systeme, neueste Hardwareentwicklungen.</p>
+      <p>Mit auf Klassenfahrt an deiner Seite sind Sarah und Ben, deine besten Freunde. Und natürlich Beep, Sarahs kleiner Assistenzroboter, der ihr überallhin folgt. Sarah ist neugierig und abenteuerlustig, immer auf der Suche nach dem nächsten Rätsel. Ben ist nachdenklich und analytisch, der Typ, der sich immer fragt, warum etwas funktioniert und nicht nur akzeptiert, dass es funktioniert.</p>
+      <div style="display:flex;gap:16px;justify-content:center;margin-top:8px;">
+        <img src="src/images/1-sarah.jpg" style="flex:1;max-width:33%;border-radius:6px;object-fit:cover;">
+        <img src="src/images/1-beep.jpg" style="flex:1;max-width:33%;border-radius:6px;object-fit:cover;">
+        <img src="src/images/1-ben.jpg" style="flex:1;max-width:33%;border-radius:6px;object-fit:cover;">
+      </div>
+    </div>
+  </div>
+
+  <div class="cell">
+    <div class="alert alert-success" style="border-radius:10px;position:relative;padding:24px 24px 20px;margin-top:25px;border:4px solid #3c763d;">
+      <span style="position:absolute;top:-28px;left:16px;background:#3c763d;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-book"></i></span>
+      <h2>Das Geheimnis von TecVille</h2>
+      <p>Während alle staunen und Fotos machen, grübelt Ben.</p>
+      <p><strong>Ben:</strong> „Ich verstehe das nicht. Pulse, StreamZ, BuddyChat – alle kostenlos. Wir zahlen nichts. Aber schau dir das hier an." Er zeigt auf die riesigen Gebäude um sie herum. „Das kostet Milliarden. Woher kommt das Geld?"</p>
+      <p><strong>Sarah</strong> zuckt die Schultern: „Keine Ahnung. Vielleicht Werbung?"</p>
+      <p><strong>Ben:</strong> „Werbung allein reicht dafür nicht. Da steckt mehr dahinter."</p>
+      <p><strong>Beep</strong> surrt leise: „Laut meinen Daten erwirtschaftet TecVille einen Großteil seines Umsatzes durch den Verkauf von Nutzerdaten an andere Unternehmen. Was genau für Daten sie sammeln und wie sie diese analysieren ist jedoch nicht öffentlich bekannt."</p>
+      <p>Eine kurze Stille.</p>
+      <p><strong>Sarah</strong> grinst: „Dann finden wir es eben heraus."</p>
+      <hr>
+      <p>Ihr geht mit eurer Gruppe in eine große Präsentationshalle für eine Vorführung. Als die Lichter gedimmt werden und eine Bühnenshow beginnt, denkt ihr: "Der perfekte Moment."</p>
+      <p>„Jetzt oder nie", flüstert <strong>Sarah</strong>.</p>
+      <p>Ihr drei schleicht euch lautlos aus der Halle. Die Gänge dahinter sind menschenleer, nur gelegentlich gleitet ein Serviceroboter vorbei. Beep navigiert euch anhand seines internen Gebäudeplans tiefer ins Firmeninnere. Nach mehreren Abzweigungen bleibt er vor einer unscheinbaren Metalltür stehen.</p>
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div>
+          <p style="margin-top:0;"><strong>Beep:</strong> „Laut Grundriss ist <i>hinter dieser Tür</i> der Serverraum. Hier werden alle Nutzerdaten von TecVille gespeichert und verarbeitet."</p>
+          <p>Ben und Sarah tauschen einen Blick aus. Die Tür hat ein digitales Schloss.</p>
+          <p><strong>Sarah</strong>: "Ohne Code kommen wir hier nicht rein."</p>
+          <p>Ihr schaut euch nach Hinweisen um. Ben scheint etwas entdeckt zu haben.</p>
+          <p><strong>Ben:</strong> „Warte mal... was sind das für Papierschnipsel auf dem Boden? auf diesem hier steht 'Notiz an die Security'. Und auf dem: 'Notiz für die Roboter KI'. Vielleicht finden wir hier das Passwort heraus!"</p>
+        </div>
+        <img src="src/images/1-zettel.jpg" style="max-width:300px;border-radius:6px;flex-shrink:0;">
+      </div>
+    </div>
+  </div>
+
+  <div class="cell">
+    <div class="alert alert-info" style="border-radius:10px;position:relative;padding:24px 24px 20px;margin-top:25px;border:4px solid #31708f;">
+      <span style="position:absolute;top:-28px;left:16px;background:#31708f;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-pencil"></i></span>
+      <h3>Aufgabe: Puzzle</h3>
+      <p><strong>Beep:</strong> „Könnt ihr das Puzzle lösen und das Passwort für den Serverraum herausbekommen?"</p>
+    </div>
+  </div>
+
+  <div class="cell">
+    <div style="font-family:'Courier New',Courier,monospace;padding:20px;display:flex;flex-direction:column;align-items:center;gap:20px;">
+      <div style="position:relative;display:inline-block;width:fit-content;max-width:500px;transform:rotate(-1.5deg);border-radius:8px;overflow:hidden;box-shadow:2px 2px 8px rgba(0,0,0,0.2);border-left:5px solid #e0d19d;">
+        <img src="src/images/1-wrinkled-paper.jpg" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:1;">
+        <div style="position:relative;z-index:2;background-color:rgba(252,245,229,0.75);padding:15px 20px;">
+          <h4 style="margin:0 0 8px;color:#8c7b4a;border-bottom:1px solid rgba(0,0,0,0.1);font-size:0.9em;text-transform:uppercase;">NOTIZ an die Security</h4>
+          <p style="margin:0;font-size:1.1em;line-height:1.4;color:#222;">"<strong style="color:#bf4040;font-size:1.2em;">M</strong>etalltür <strong style="color:#bf4040;font-size:1.2em;">a</strong>ktiviert. <strong style="color:#bf4040;font-size:1.2em;">C</strong>odes <strong style="color:#bf4040;font-size:1.2em;">h</strong>ier <strong style="color:#bf4040;font-size:1.2em;">i</strong>m <strong style="color:#bf4040;font-size:1.2em;">n</strong>euem <strong style="color:#bf4040;font-size:1.2em;">E</strong>ingabefeld bestätigen!"</p>
+        </div>
+      </div>
+      <div style="position:relative;display:inline-block;width:fit-content;max-width:500px;transform:rotate(1deg);border-radius:8px;overflow:hidden;box-shadow:2px 2px 8px rgba(0,0,0,0.2);border-left:5px solid #bcd4bc;">
+        <img src="src/images/1-wrinkled-paper.jpg" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:1;">
+        <div style="position:relative;z-index:2;background-color:rgba(245,249,245,0.75);padding:15px 20px;">
+          <h4 style="margin:0 0 8px;color:#6b8e6b;border-bottom:1px solid rgba(0,0,0,0.1);font-size:0.9em;text-transform:uppercase;">NOTIZ für Roboter-KI</h4>
+          <p style="margin:0;font-size:1.1em;line-height:1.4;color:#222;">"<strong style="color:#3b7bad;font-size:1.2em;">L</strong>eise! <strong style="color:#3b7bad;font-size:1.2em;">e</strong>indringlinge <strong style="color:#3b7bad;font-size:1.2em;">a</strong>nalysieren, <strong style="color:#3b7bad;font-size:1.2em;">r</strong>oboter <strong style="color:#3b7bad;font-size:1.2em;">n</strong>ur <strong style="color:#3b7bad;font-size:1.2em;">i</strong>n <strong style="color:#3b7bad;font-size:1.2em;">n</strong>euer <strong style="color:#3b7bad;font-size:1.2em;">G</strong>eschwindigkeit testen."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cell">
+    <div class="alert alert-info" style="border-radius:10px;position:relative;padding:24px 32px 20px;margin-top:25px;border:4px solid #31708f;max-width:420px;margin-left:auto;margin-right:auto;">
+      <span style="position:absolute;top:-28px;left:16px;background:#31708f;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-lock"></i></span>
+      <div style="text-align:center;margin-bottom:16px;">
+        <h3 style="color:#31708f;margin:0 0 6px;">🔐 Zugang zum Serverraum</h3>
+        <p style="margin:0;color:#31708f;font-size:14px;">Gebt das Codewort ein, um die Tür zu öffnen:</p>
+      </div>
+      <hr style="border:none;border-top:1px solid #31708f;opacity:0.3;margin-bottom:16px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <input id="pw3-input" type="password" placeholder="Codewort eingeben …" style="border:1.5px solid #31708f;border-radius:6px;padding:7px 12px;font-size:14px;width:280px;outline:none;background:white;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <input type="checkbox" id="pw3-show" style="cursor:pointer;">
+          <label for="pw3-show" style="color:#31708f;font-size:13px;cursor:pointer;">Passwort anzeigen</label>
+        </div>
+        <button id="pw3-btn" style="background:#31708f;color:white;border:none;border-radius:6px;padding:9px 28px;font-weight:bold;font-size:14px;cursor:pointer;">Bestätigen</button>
+        <p id="pw3-feedback" style="margin:0;font-weight:bold;font-size:15px;text-align:center;"></p>
+      </div>
+      <div id="pw3-nav" style="display:none;margin-top:16px;text-align:center;">
+        <a href="story_game_2.html" style="display:inline-block;padding:10px 24px;border-radius:8px;border:3px solid #31708f;background:#beeaf1;color:#31708f;text-decoration:none;font-weight:bold;box-shadow:0 2px 6px rgba(0,0,0,0.15);">In den Serverraum &nbsp;<i class="fa fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var input=document.getElementById("pw3-input"),btn=document.getElementById("pw3-btn"),showCb=document.getElementById("pw3-show"),feedback=document.getElementById("pw3-feedback"),nav=document.getElementById("pw3-nav");
+    showCb.addEventListener("change",function(){input.type=this.checked?"text":"password";});
+    function checkPassword(){
+      var v=input.value.toLowerCase().replace(/[\s-]/g,'');
+      if(v==="machinelearning"){feedback.style.color="#3c763d";feedback.textContent="✅ Passwort korrekt! Zugriff gewährt.";nav.style.display="block";}
+      else{feedback.style.color="#a94442";feedback.textContent="❌ Falsches Passwort! Zugriff verweigert.";nav.style.display="none";}
+    }
+    btn.onclick=checkPassword;
+    input.addEventListener("keydown",function(e){if(e.key==="Enter")checkPassword();});
+  </script>
+</body>
+</html>

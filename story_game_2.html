@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TecVille – Kapitel 2: Im Serverraum</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.32.0/plotly.min.js"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 30px 20px 80px; background: #f5f5f5; line-height: 1.6; }
+    .chapter-nav { display: flex; gap: 6px; margin-bottom: 28px; align-items: center; }
+    .chapter-dot { width: 30px; height: 30px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: #666; text-decoration: none; transition: background 0.2s; }
+    .chapter-dot.active { background: #31708f; color: white; }
+    .chapter-dot.done { background: #3c763d; color: white; }
+    .cell { margin-top: 44px; }
+    .alert-success { background-color: #dff0d8 !important; }
+    .alert-info    { background-color: #d9edf7 !important; }
+    .alert-danger  { background-color: #f2dede !important; }
+    .slider-row { display: flex; align-items: center; gap: 12px; margin: 8px 0; }
+    .slider-row label { min-width: 120px; font-size: 14px; }
+    .slider-row input[type=range] { flex: 1; }
+    .slider-row span { min-width: 60px; font-size: 14px; font-family: monospace; }
+    #warning-box { display: none; background: #fcf8e3; border: 1px solid #8a6d3b; border-radius: 6px; padding: 10px 16px; margin-top: 10px; font-size: 14px; color: #8a6d3b; text-align: center; }
+    #ch-slider { -webkit-appearance: none; appearance: none; height: 28px; border-radius: 6px; outline: none; cursor: pointer; touch-action: pan-y; }
+    #ch-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 36px; height: 36px; border-radius: 50%; background: #31708f; cursor: pointer; border: 3px solid white; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+    #ch-slider::-moz-range-thumb { width: 36px; height: 36px; border-radius: 50%; background: #31708f; cursor: pointer; border: 3px solid white; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+  </style>
+</head>
+<body>
+  <nav class="chapter-nav">
+    <span style="font-size:13px;color:#888;margin-right:4px;">Kapitel</span>
+    <a class="chapter-dot done" href="index.html">1</a>
+    <span class="chapter-dot active">2</span>
+    <span class="chapter-dot" style="pointer-events:none;">3</span>
+    <span class="chapter-dot" style="pointer-events:none;">4</span>
+    <span class="chapter-dot" style="pointer-events:none;">5</span>
+    <span class="chapter-dot" style="pointer-events:none;">6</span>
+  </nav>
+
+  <div class="cell">
+    <div class="alert alert-success" style="border-radius:10px;position:relative;padding:24px 24px 20px;margin-top:25px;border:4px solid #3c763d;">
+      <span style="position:absolute;top:-28px;left:16px;background:#3c763d;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-book"></i></span>
+      <h2>Im Serverraum</h2>
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div>
+          <p style="margin-top:0;">Der Code funktioniert. Mit einem leisen Klicken öffnet sich die schwere Tür.</p>
+          <p>Was ihr seht, verschlägt euch den Atem.</p>
+          <p>Reihe um Reihe von deckenhohen Serverschränken, alle schwach blau leuchtend, ein leises Summen in der Luft. Die Wände sind bedeckt mit Bildschirmen voller Datenströme. Namen, Zahlen, Profile, Verbindungslinien zwischen Millionen von Punkten.</p>
+          <p><strong>Sarah</strong> flüstert: „Das sind... Menschen. Das sind Profile von echten Menschen."</p>
+          <p><strong>Beep</strong> scannt die nächsten Bildschirme: „Bestätigt. Ich erkenne Bewegungsprofile, Kaufverhalten, Schlafrhythmen, soziale Verbindungen—" Beep kann seinen Satz nicht beenden.</p>
+        </div>
+        <img src="src/images/2-serverraum.jpg" style="max-width:220px;border-radius:6px;flex-shrink:0;">
+      </div>
+    </div>
+  </div>
+
+  <div class="cell">
+    <div class="alert alert-danger" style="border-radius:10px;position:relative;padding:24px 24px 20px;margin-top:25px;border:4px solid #a94442;">
+      <span style="position:absolute;top:-28px;left:16px;background:#a94442;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-exclamation"></i></span>
+      <h3>Warnung im Serverraum</h3>
+      <p>Lautsprecher ertönen: <strong>„UNBEFUGTER ZUGANG – ZONE SERVERRAUM – SICHERHEITSROBOTER AKTIVIERT."</strong></p>
+      <p>Ein grelles Rot. Ein durchdringender Alarm.</p>
+    </div>
+  </div>
+
+  <div class="cell">
+    <div class="alert alert-success" style="border-radius:10px;position:relative;padding:24px 24px 20px;margin-top:25px;border:4px solid #3c763d;">
+      <span style="position:absolute;top:-28px;left:16px;background:#3c763d;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-book"></i></span>
+      <h2>Die Flucht</h2>
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div>
+          <p style="margin-top:0;"><strong>Ben:</strong> „Rennt!"</p>
+          <p>Doch bevor ihr auch nur drei Schritte macht, öffnen sich am anderen Ende des Serverraums zwei große Schwingtüren und herein rollen vier Sicherheitsroboter. Kompakt, schnell, mit roten Sensorleuchten, die sich sofort auf euch richten. Sie rasen auf euch zu.</p>
+          <p><strong>Sarah:</strong> „Woher wissen die, wo wir sind?!"</p>
+          <p><strong>Beep:</strong> „Sie haben Wärmesensoren! Außerdem wissen sie wie schnell ihr laufen könnt und richten ihre eigene Geschwindigkeit danach aus."</p>
+          <p><strong>Ben:</strong> „Was?! Die wissen, wie schnell wir rennen können?"</p>
+          <p><strong>Beep:</strong> „Sie schätzen es. Basierend auf eurer Körpergröße und einem Datensatz, den sie über Kinder gespeichert haben. Ich weiß, wo wir uns verstecken können! Mir nach!"</p>
+        </div>
+        <img src="src/images/2-alarm.jpg" style="max-width:300px;border-radius:6px;flex-shrink:0;">
+      </div>
+      <hr>
+      <p>Ihr rennt. Links, rechts, durch Serverreihen, Beep flitzt voraus. Hinter einer letzten Reihe von Serverschränken entdeckt ihr eine kleine Nebentür, kaum sichtbar zwischen den Schränken. Ihr reißt die Tür auf, springt hindurch und drückt sie hinter euch zu.</p>
+      <p>Stille.</p>
+      <p>Atemlos lehnt ihr euch gegen die Wand. Der Raum ist klein, vollgestellt mit alten Gerätschaften und Kabeln. Durch die Wände hört ihr die Roboter vorbeifahren, aber sie scheinen euch nicht entdeckt zu haben.</p>
+      <hr>
+      <p><strong>Ben</strong> keucht: „Was war das eben? Wie können die wissen, wie schnell wir sind?"</p>
+      <p><strong>Beep</strong> öffnet ein Hologramm in der Luft vor euch. „Ich habe vorhin beim Vorbeilaufen einen Datensatz kopiert. Schaut her." Blaue Punkte erscheinen in einem Graphen mit einer x-Achse nach rechts für Körpergröße und einer y-Achse nach oben für Laufgeschwindigkeit.</p>
+    </div>
+  </div>
+
+  <!-- show_plot_kids() -->
+  <div class="cell">
+    <div style="background:white;border:1px solid #ddd;border-radius:8px;padding:4px;">
+      <div id="plot-kids" style="width:100%;height:430px;"></div>
+    </div>
+  </div>
+
+  <div class="cell">
+    <div class="alert alert-success" style="border-radius:10px;position:relative;padding:24px 24px 20px;margin-top:25px;border:4px solid #3c763d;">
+      <span style="position:absolute;top:-28px;left:16px;background:#3c763d;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-book"></i></span>
+      <h2>Die Vorhersage der Roboter</h2>
+      <img src="src/images/2-datenpunkte.jpg" style="float:right;margin-left:16px;margin-bottom:8px;max-width:300px;border-radius:6px;">
+      <p><strong>Sarah</strong> beugt sich vor. „Jeder Punkt da oben ist ein Kind?"</p>
+      <p><strong>Beep:</strong> „Genau. TecVille hat von Kindern zwei Dinge gemessen: die Körpergröße und die maximale Laufgeschwindigkeit. Wahrscheinlich heimlich, über BuddyChat."</p>
+      <p><strong>Ben:</strong> „Aber was machen die Roboter damit? Wie hilft ihnen das, unsere Geschwindigkeit vorherzusagen?"</p>
+      <p><strong>Beep:</strong> „Sie legen eine Gerade durch die Punkte. Eine Linie, die möglichst nah an allen Datenpunkten liegt. Damit können sie für jede beliebige Körpergröße eine Geschwindigkeit vorhersagen, auch wenn diese Größe gar nicht im Datensatz vorkommt."</p>
+      <p><strong>Sarah:</strong> „Zum Beispiel ich. Ich bin 145 cm. Da gibt es keinen Punkt."</p>
+      <p><strong>Beep:</strong> „Genau. Aber so eine Gerade läuft trotzdem durch diesen Bereich und macht eine Vorhersage. Das nennt man eine <strong>Regressionsgerade</strong>. Was Regression bedeutet erkläre ich euch später."</p>
+      <div style="clear:both;"></div>
+    </div>
+  </div>
+
+  <div class="cell">
+    <div class="alert alert-info" style="border-radius:10px;position:relative;padding:24px 24px 20px;margin-top:25px;border:4px solid #31708f;">
+      <span style="position:absolute;top:-28px;left:16px;background:#31708f;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-pencil"></i></span>
+      <h3>Aufgabe 2.1 – Regressionsgerade erstellen</h3>
+      <p><strong>Ben:</strong> „Dann lass uns selbst mal versuchen, diese Gerade zu finden. Vielleicht können wir die Roboter irgendwie austricksen."</p>
+      <hr>
+      <p>Verändere die Steigung und den y-Achsenabschnitt deiner Geraden so, dass die Gerade möglichst nah an allen Datenpunkten liegt. Je kleiner der Fehlerwert, desto besser.</p>
+      <p>Die Gerade der Roboter kannst du zum Vergleich durch einen Klick auf „Zeige Regressionsgerade" anzeigen lassen. Aber nur, wenn deine Gerade schon genau genug ist!</p>
+    </div>
+  </div>
+
+  <!-- lineare_regression_big() -->
+  <div class="cell">
+    <div style="background:white;border:1px solid #ddd;border-radius:8px;padding:16px 20px;">
+      <div id="plot-regression" style="width:100%;height:480px;"></div>
+      <!-- Crosshair coordinate reader — touch-friendly slider -->
+      <div style="margin-top:14px;padding:12px 16px;background:#eef6fb;border-radius:8px;border:1px solid #aed4e8;">
+        <div style="font-size:13px;font-weight:bold;color:#1a5276;margin-bottom:10px;">📍 Koordinaten ablesen — Körpergröße: <strong id="ch-x-val">25</strong> cm</div>
+        <input type="range" id="ch-slider" min="0" max="180" value="25" style="width:100%;accent-color:#31708f;">
+        <div id="ch-readout" style="margin-top:8px;font-size:15px;color:#1a5276;min-height:22px;"></div>
+      </div>
+      <div style="margin-top:14px;border-top:1px solid #eee;padding-top:14px;">
+        <div class="slider-row">
+          <label>Steigung:</label>
+          <input type="range" id="slope-slider" min="0.10" max="0.40" step="0.01" value="0.10">
+          <span id="slope-val">0,10</span>
+        </div>
+        <div class="slider-row">
+          <label>y-Achsenabschnitt:</label>
+          <input type="range" id="intercept-slider" min="-30" max="-10" step="0.01" value="-10">
+          <span id="intercept-val">-10,00</span>
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;align-items:center;gap:10px;">
+        <input type="checkbox" id="show-robot-line" style="cursor:pointer;width:16px;height:16px;">
+        <label for="show-robot-line" style="cursor:pointer;font-size:14px;margin:0;">Zeige Regressionsgerade</label>
+      </div>
+      <div id="warning-box">⚠️ Deine Gerade ist noch etwas zu ungenau. Bitte versuche es erneut.</div>
+    </div>
+  </div>
+
+  <div class="cell">
+    <details style="background:#fffdf0;border:1px solid #ffc107;border-radius:8px;padding:10px 16px;margin:6px 0;">
+      <summary style="cursor:pointer;font-weight:bold;color:#856404;">💡 Was ist der Fehlerwert?</summary>
+      <p style="margin-top:10px;color:black;">Der Fehlerwert zeigt, wie weit die Datenpunkte im Durchschnitt von der Geraden entfernt sind. Je kleiner der Wert, desto besser passt die Gerade zu den Daten und desto präziser sind die Vorhersagen.</p>
+    </details>
+  </div>
+
+  <div class="cell">
+    <div class="alert alert-info" style="border-radius:10px;position:relative;padding:24px 24px 20px;margin-top:25px;border:4px solid #31708f;">
+      <span style="position:absolute;top:-28px;left:16px;background:#31708f;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-pencil"></i></span>
+      <h3>Aufgabe 2.2 – Regressionsgerade benutzen</h3>
+      <p><strong>Sarah:</strong> „Können wir jetzt herausfinden, wie schnell ich mit einer Größe von 145 cm laut den Robotern bin?"</p>
+      <p><strong>Beep:</strong> „Das sollte gehen! Schiebt den Regler unter dem Graphen auf 145 cm, um die Vorhersage der Roboter für Sarah abzulesen."</p>
+    </div>
+  </div>
+
+  <!-- guess_speed widget -->
+  <div class="cell">
+    <div class="alert alert-info" style="border-radius:10px;position:relative;padding:24px 24px 20px;margin-top:25px;border:4px solid #31708f;max-width:420px;margin-left:auto;margin-right:auto;">
+      <span style="position:absolute;top:-28px;left:16px;background:#31708f;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-lock"></i></span>
+      <div style="text-align:center;margin-bottom:16px;">
+        <h3 style="color:#31708f;margin:0 0 6px;">🤖 Maschinenvorhersage</h3>
+        <p style="margin:0;color:#31708f;font-size:14px;">Wie schnell ist Sarah?</p>
+      </div>
+      <hr style="border:none;border-top:1px solid #31708f;opacity:0.3;margin-bottom:16px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <input id="gs-input" type="text" placeholder="Zahl wie z.B. 10,50" style="border:1.5px solid #31708f;border-radius:6px;padding:7px 12px;font-size:14px;width:200px;outline:none;text-align:center;">
+        <button id="gs-btn" style="background:#31708f;color:white;border:none;border-radius:6px;padding:9px 28px;font-weight:bold;font-size:14px;cursor:pointer;">Überprüfen</button>
+        <p id="gs-feedback" style="margin:0;font-weight:bold;font-size:15px;text-align:center;"></p>
+        <p id="gs-hint" style="margin:0;color:#31708f;font-size:14px;text-align:center;"></p>
+      </div>
+      <div id="gs-nav-buttons" style="display:none;margin-top:16px;">
+        <div style="display:flex;justify-content:center;gap:8px;margin:8px 0;">
+          <a href="index.html" style="padding:10px 24px;border-radius:8px;border:2px solid #31708f;background:white;color:#31708f;text-decoration:none;font-weight:bold;box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fa fa-arrow-left"></i> &nbsp; Zurück</a>
+          <a href="story_game_3.html" style="padding:10px 24px;border-radius:8px;border:2px solid #31708f;background:#31708f;color:white;text-decoration:none;font-weight:bold;box-shadow:0 2px 4px rgba(0,0,0,0.1);">Weiter &nbsp;<i class="fa fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // === Shared data ===
+    var X_KIDS=[166.5465,128.4283,125.2944,123.3571,157.1723,123.0025,158.3436,153.9595,135.3065,139.51,164.5544,157.4583,119.2284,154.9395,134.1805,169.4844,122.6965,134.6285,166.5973,149.8122];
+    var Y_KIDS=[29.1629,13.7231,17.7741,11.6667,22.3171,15.8745,30.0717,28.4806,22.5023,21.0456,27.1379,27.5532,14.8145,25.1782,15.9643,29.2954,15.0287,14.7432,27.7746,19.6198];
+    var NAMED_IDX={0:'Lena',3:'Tim',5:'Jonas',8:'Maya',10:'Finn',13:'Clara'};
+    var OPT_SLOPE=0.327431,OPT_INT=-25.737280,OPT_MSE=6.092557;
+
+    function fmtDE(v,d){return v.toFixed(d).replace('.',',');}
+    function calcMSE(s,ic){var sum=0;for(var i=0;i<X_KIDS.length;i++){var p=s*X_KIDS[i]+ic;sum+=(Y_KIDS[i]-p)*(Y_KIDS[i]-p);}return sum/X_KIDS.length;}
+
+    // Dense x array for line traces (every 1 cm → hoverable/clickable at each integer)
+    var xDense=[];for(var x=-10;x<=180;x++)xDense.push(x);
+
+    var plotCfg={displayModeBar:false,scrollZoom:false,staticPlot:false};
+
+    // ── Plot 1: show_plot_kids ──
+    var xBlue=[],yBlue=[],xOrange=[],yOrange=[],lblOrange=[];
+    for(var i=0;i<X_KIDS.length;i++){
+      if(NAMED_IDX[i]){xOrange.push(X_KIDS[i]);yOrange.push(Y_KIDS[i]);lblOrange.push(NAMED_IDX[i]);}
+      else{xBlue.push(X_KIDS[i]);yBlue.push(Y_KIDS[i]);}
+    }
+    Plotly.newPlot('plot-kids',[
+      {x:xBlue,y:yBlue,mode:'markers',type:'scatter',name:'Daten der Kinder',marker:{color:'#0173b2',size:9}},
+      {x:xOrange,y:yOrange,mode:'markers+text',type:'scatter',name:'Benannte Kinder',
+       text:lblOrange,textposition:'top center',marker:{color:'#de8f05',size:10},textfont:{color:'#de8f05',size:11}}
+    ],{
+      xaxis:{title:'Körpergröße (cm)',range:[105,180]},
+      yaxis:{title:'Maximale Geschwindigkeit (km/h)',range:[-1.5,31.5]},
+      title:{text:'Größe vs. maximale Geschwindigkeit',font:{size:15}},
+      legend:{orientation:'h',xanchor:'center',x:0.5,y:-0.18},
+      margin:{t:50,r:20,b:110,l:60},
+      plot_bgcolor:'white',paper_bgcolor:'white',
+      dragmode:false
+    },plotCfg);
+
+    // ── Plot 2: lineare_regression_big (interactive) ──
+    var s0=0.10,ic0=-10.0;
+
+    function studentY(s,ic){return xDense.map(function(x){return s*x+ic;});}
+    function robotY(){return xDense.map(function(x){return OPT_SLOPE*x+OPT_INT;});}
+    function legendStudent(s,ic){
+      var m=calcMSE(s,ic);
+      return 'Deine Gerade: Output&nbsp;=&nbsp;'+fmtDE(s,2)+'&nbsp;×&nbsp;Input&nbsp;+&nbsp;('+fmtDE(ic,2)+')&nbsp;&nbsp;(Fehlerwert:&nbsp;'+fmtDE(m,2)+')';
+    }
+    function legendRobot(){
+      return 'Roboter Gerade: Output&nbsp;=&nbsp;'+fmtDE(OPT_SLOPE,2)+'&nbsp;×&nbsp;Input&nbsp;+&nbsp;('+fmtDE(OPT_INT,2)+')&nbsp;&nbsp;(Fehlerwert:&nbsp;'+fmtDE(OPT_MSE,2)+')';
+    }
+
+    Plotly.newPlot('plot-regression',[
+      {x:X_KIDS,y:Y_KIDS,mode:'markers',type:'scatter',name:'Daten der Kinder',marker:{color:'#0173b2',size:9},hovertemplate:'x=%{x:.1f} cm<br>y=%{y:.2f} km/h<extra>Datenpunkt</extra>'},
+      {x:xDense,y:studentY(s0,ic0),mode:'lines',type:'scatter',name:legendStudent(s0,ic0),line:{color:'#de8f05',width:2.5},hovertemplate:'x=%{x} cm<br>y=%{y:.2f} km/h<extra>Deine Gerade</extra>'},
+      {x:xDense,y:robotY(),mode:'lines',type:'scatter',name:legendRobot(),line:{color:'#029e73',width:2.5},visible:false,hovertemplate:'x=%{x} cm<br>y=%{y:.2f} km/h<extra>Roboter Gerade</extra>'}
+    ],{
+      xaxis:{title:'Körpergröße (cm)',range:[-10,182],zeroline:true,zerolinecolor:'#ccc'},
+      yaxis:{title:'Maximale Geschwindigkeit (km/h)',range:[-35,36],zeroline:true,zerolinecolor:'#ccc'},
+      title:{text:'Größe vs. maximale Geschwindigkeit',font:{size:15}},
+      legend:{orientation:'h',xanchor:'center',x:0.5,y:-0.22,bgcolor:'rgba(255,255,255,0.9)',bordercolor:'#ddd',borderwidth:1},
+      margin:{t:50,r:20,b:140,l:60},
+      plot_bgcolor:'white',paper_bgcolor:'white',
+      dragmode:false,
+      hovermode:'closest',
+      shapes:[{type:'line',x0:25,x1:25,y0:-35,y1:36,line:{color:'#a94442',width:2,dash:'dot'}}]
+    },plotCfg);
+
+    // ── Crosshair (touch-friendly coordinate reader) ──
+    function updateCrosshair() {
+      var x = parseInt(document.getElementById('ch-slider').value);
+      document.getElementById('ch-x-val').textContent = x;
+
+      var s  = parseFloat(document.getElementById('slope-slider').value);
+      var ic = parseFloat(document.getElementById('intercept-slider').value);
+      var yStudent = s * x + ic;
+
+      var robotShown = document.getElementById('show-robot-line').checked;
+      var html = '<span style="color:#de8f05;font-size:16px;">⬤</span>&nbsp; Deine Gerade: <strong>' + fmtDE(yStudent,2) + ' km/h</strong>';
+      if (robotShown) {
+        var yRobot = OPT_SLOPE * x + OPT_INT;
+        html += '&emsp;<span style="color:#029e73;font-size:16px;">⬤</span>&nbsp; Roboter Gerade: <strong>' + fmtDE(yRobot,2) + ' km/h</strong>';
+      }
+      document.getElementById('ch-readout').innerHTML = html;
+      Plotly.relayout('plot-regression', {'shapes[0].x0': x, 'shapes[0].x1': x});
+    }
+
+    document.getElementById('ch-slider').addEventListener('input', updateCrosshair);
+
+    // Slider updates
+    function updateLine(){
+      var s=parseFloat(document.getElementById('slope-slider').value);
+      var ic=parseFloat(document.getElementById('intercept-slider').value);
+      document.getElementById('slope-val').textContent=fmtDE(s,2);
+      document.getElementById('intercept-val').textContent=fmtDE(ic,2);
+      document.getElementById('show-robot-line').checked=false;
+      Plotly.restyle('plot-regression',{y:[studentY(s,ic)],name:[legendStudent(s,ic)]},[1]);
+      Plotly.restyle('plot-regression',{visible:false},[2]);
+      updateCrosshair();
+    }
+    document.getElementById('slope-slider').addEventListener('input',updateLine);
+    document.getElementById('intercept-slider').addEventListener('input',updateLine);
+
+    // Reveal robot line
+    var warnT=null;
+    document.getElementById('show-robot-line').addEventListener('change',function(){
+      if(!this.checked){Plotly.restyle('plot-regression',{visible:false},[2]);updateCrosshair();return;}
+      var s=parseFloat(document.getElementById('slope-slider').value);
+      var ic=parseFloat(document.getElementById('intercept-slider').value);
+      if(Math.abs(calcMSE(s,ic)-OPT_MSE)>5){
+        this.checked=false;
+        var wb=document.getElementById('warning-box');
+        wb.style.display='block';
+        if(warnT)clearTimeout(warnT);
+        warnT=setTimeout(function(){wb.style.display='none';},3000);
+      }else{
+        Plotly.restyle('plot-regression',{visible:true},[2]);
+        updateCrosshair();
+      }
+    });
+
+    // Initialise crosshair display
+    updateCrosshair();
+
+    // ── guess_speed widget ──
+    function checkSpeed(){
+      var raw=document.getElementById('gs-input').value.trim().replace(',','.');
+      var fb=document.getElementById('gs-feedback'),hint=document.getElementById('gs-hint'),nav=document.getElementById('gs-nav-buttons');
+      var v=parseFloat(raw);
+      if(isNaN(v)){fb.style.color='#a94442';fb.textContent='⚠️ Bitte eine Zahl eingeben (z. B. 10,50).';hint.textContent='';nav.style.display='none';return;}
+      if(Math.abs(v-22.11)<=1.0){
+        fb.style.color='#3c763d';fb.textContent='✅ Richtig! Die Roboter schätzen Sarahs Geschwindigkeit auf etwas mehr als 22 km/h.';
+        hint.style.color='#31708f';hint.textContent='Dein Wert liegt nah genug an der Vorhersage der Roboter.';nav.style.display='block';
+      }else{
+        fb.style.color='#a94442';fb.textContent='❌ Nicht ganz. Schau nochmal genau auf die Gerade bei einer Körpergröße von 145 cm.';hint.textContent='';nav.style.display='none';
+      }
+    }
+    document.getElementById('gs-btn').onclick=checkSpeed;
+    document.getElementById('gs-input').addEventListener('keydown',function(e){if(e.key==='Enter')checkSpeed();});
+  </script>
+</body>
+</html>

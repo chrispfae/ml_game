@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TecVille – Kapitel 5: Flucht in die Freiheit</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.32.0/plotly.min.js"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 30px 20px 80px; background: #f5f5f5; line-height: 1.6; }
+    .chapter-nav { display: flex; gap: 6px; margin-bottom: 28px; align-items: center; }
+    .chapter-dot { width: 30px; height: 30px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: #666; text-decoration: none; }
+    .chapter-dot.active { background: #31708f; color: white; }
+    .chapter-dot.done { background: #3c763d; color: white; }
+    .cell { margin-top: 44px; }
+    .alert-success { background-color: #dff0d8 !important; }
+    .alert-info    { background-color: #d9edf7 !important; }
+    .alert-danger  { background-color: #f2dede !important; }
+    .step-heading { font-weight: bold; margin: 12px 0 4px; }
+  </style>
+</head>
+<body>
+  <nav class="chapter-nav">
+    <span style="font-size:13px;color:#888;margin-right:4px;">Kapitel</span>
+    <a class="chapter-dot done" href="index.html">1</a>
+    <a class="chapter-dot done" href="story_game_2.html">2</a>
+    <a class="chapter-dot done" href="story_game_3.html">3</a>
+    <a class="chapter-dot done" href="story_game_4.html">4</a>
+    <span class="chapter-dot active">5</span>
+    <span class="chapter-dot" style="pointer-events:none;">6</span>
+  </nav>
+
+  <div class="cell">
+    <div class="alert alert-success" style="border-radius:10px;position:relative;padding:24px 24px 20px;margin-top:25px;border:4px solid #3c763d;">
+      <span style="position:absolute;top:-28px;left:16px;background:#3c763d;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-book"></i></span>
+      <h2>Wie entsteht die Gerade und die Kurve?</h2>
+      <p><strong>Ben:</strong> „Okay, ich glaube ich verstehe jetzt, was die Roboter gemacht haben. Aber wie funktioniert das eigentlich generell? Also nicht nur bei Körpergröße und Geschwindigkeit. Wie lernen die Maschinen eigentlich?"</p>
+      <p><strong>Beep:</strong> „Gute Frage. Das heißt tatsächlich 'Machine Learning' und es läuft immer nach demselben Muster ab."</p>
+      <hr>
+      <p class="step-heading">Schritt 1 – Daten sammeln</p>
+      <p><strong>Beep:</strong> „Zuerst braucht man Datenpunkte. Viele davon. Ein Datenpunkt besteht hier aus zwei Werten: Einem Eingabewert und dem dazugehörigen Ausgabewert. Bei uns: Körpergröße rein, Geschwindigkeit raus. Ein einzelner Datepunkt kann aber auch aus ganz vielen Werten bestehen, wie zum Beispiel Körpergröße, Geschwindigkeit, Schuhgröße und Name!"</p>
+      <p><strong>Sarah:</strong> „Je mehr Datenpunkte, desto besser?"</p>
+      <p><strong>Beep:</strong> „Meistens ja. Mit mehr Datenpunkten ensteht ein zuverlässigeres Modell."</p>
+      <hr>
+      <p class="step-heading">Schritt 2 – Training</p>
+      <p><strong>Beep:</strong> „Dann kommt das Training. Die Maschine schaut sich alle Datenpunkte an und sucht ein Modell. Das Modell ist ein Formel, Kurve oder Gerade, das möglichst gut zu den Daten passt. Dabei geht die Maschine so ähnlich vor, wie ihr das gemacht habt! Ihr habt auch geschaut wie ihr eine Gerade verändern müsst, damit der Fehlerwert möglichst klein wird. Die Maschine macht das genau so. Wenn der Fehlerwert von Veränderung zu Veränderung kleiner wird, wird weiter in die gleiche Richtung verändert, weil sich das Modell so immer weiter verbessert. Wenn der Fehlerwert aber mit einer Veränderung größer wird, dann muss wieder zurück in die andere Richtung gegangen werden, damit das Modell nicht schlechter wird."</p>
+      <p><strong>Ben:</strong> „Und wann hört sie auf?"</p>
+      <p><strong>Beep:</strong> „Wenn sich der Fehlerwert von einer Veränderung auf die andere nicht mehr oder nur noch minimal ändert. Dann ist das Training abgeschlossen und wir haben dann zum Beispiel bei einer Gerade ein lineares Modell, welches durch Machine Learning entstanden ist!"</p>
+      <hr>
+      <p class="step-heading">Schritt 3 – Anwendung</p>
+      <p><strong>Beep:</strong> „Jetzt kann das Modell auf neue Daten angewendet werden. Daten, die es noch nie gesehen hat. Man gibt einen Eingabewert rein und das Modell gibt eine Vorhersage aus."</p>
+      <p><strong>Sarah:</strong> „Wie bei mir. 145 cm als Eingabe und das Modell sagt als Ausgabe, wie schnell ich bin."</p>
+      <p><strong>Beep:</strong> „Genau. Es schätzt. Meistens ist die Schätzung gut, aber nie perfekt. Je kleiner der Fehlerwert, desto besser die Vorhersagen."</p>
+    </div>
+  </div>
+
+  <div class="cell">
+    <div class="alert alert-success" style="border-radius:10px;position:relative;padding:24px 24px 20px;margin-top:25px;border:4px solid #3c763d;">
+      <span style="position:absolute;top:-28px;left:16px;background:#3c763d;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-book"></i></span>
+      <h2>Flucht in die Freiheit</h2>
+      <hr>
+      <img src="src/images/5-choice.jpg" style="float:right;margin-left:16px;margin-bottom:8px;max-width:300px;border-radius:6px;">
+      <p><strong>Beep:</strong> „Und genau das macht TecVille im großen Stil. Nicht nur mit Laufgeschwindigkeit, sondern mit allem. Welche Videos du dir anschaust, wie lange du sie anschaust und auch welchen Videos du einen Daumen hoch gibst oder mit einem Herz markierst. All das sind Eingabewerte. Mit diesen Daten kann TecVille ein Modell trainieren und dann vorhersagen: Was willst du als nächstes sehen? Welches Produkt wirst du kaufen? Mit diesen Vorhersagen will TecVille den Konsum von Produkten und Medien maximieren und möglichst viel Geld verdienen."</p>
+      <p><strong>Ben</strong> und <strong>Sarah</strong> schweigen einen Moment.</p>
+      <p><strong>Ben:</strong> „Krass. Vielleicht wird der Serverraum deshalb so streng bewacht."</p>
+      <p><strong>Sarah:</strong> „Dann lasst uns lieber schnell abhauen!"</p>
+      <div style="clear:both;"></div>
+    </div>
+  </div>
+
+  <div class="cell">
+    <div class="alert alert-info" style="border-radius:10px;position:relative;padding:24px 24px 20px;margin-top:25px;border:4px solid #31708f;">
+      <span style="position:absolute;top:-28px;left:16px;background:#31708f;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-pencil"></i></span>
+      <h3>Aufgabe 5 – Flucht in die Freiheit</h3>
+      <p><strong>Beep</strong> „Ich habe euch gescannt und eure Daten in den Datensatz eingetragen. Das könnte unsere Chance sein. Wer von euch sollte rennen um den Knopf zu drücken und die Roboter auszuschalten? Schaut euch die Grafik ganz genau an und entscheidet dann. Wir müssen uns ganz sicher sein!"</p>
+    </div>
+  </div>
+
+  <!-- zeige_lineare_regression_5() -->
+  <div class="cell">
+    <div style="background:white;border:1px solid #ddd;border-radius:8px;padding:4px;">
+      <div id="plot-regression5" style="width:100%;height:430px;"></div>
+    </div>
+  </div>
+
+  <div class="cell">
+    <details style="background:#fffdf0;border:1px solid #ffc107;border-radius:8px;padding:10px 16px;margin:6px 0;">
+      <summary style="cursor:pointer;font-weight:bold;color:#856404;">💡 Tipp</summary>
+      <p style="margin-top:10px;color:black;">Die Roboter nutzen die Gerade, um die Geschwindigkeit vorherzusagen. Eines der Kinder ist schneller, als die Roboter es voraussagen. Welches ist es?</p>
+    </details>
+  </div>
+
+  <!-- escape_choice widget -->
+  <div class="cell">
+    <div class="alert alert-info" style="border-radius:10px;position:relative;padding:24px 24px 20px;margin-top:25px;border:4px solid #31708f;max-width:420px;margin-left:auto;margin-right:auto;">
+      <span style="position:absolute;top:-28px;left:16px;background:#31708f;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-lock"></i></span>
+      <div style="text-align:center;margin-bottom:16px;">
+        <h3 style="color:#31708f;margin:0 0 6px;">🏃 Flucht in die Freiheit</h3>
+        <p style="text-align:center;margin:0;color:#31708f;font-size:14px;">Wer sollte rennen, um den Knopf zu drücken?</p>
+      </div>
+      <hr style="border:none;border-top:1px solid #31708f;opacity:0.3;margin-bottom:16px;">
+      <div style="display:flex;justify-content:center;gap:12px;margin-bottom:16px;">
+        <button id="btn-sarah" style="padding:9px 32px;border-radius:6px;border:2px solid #31708f;background:white;color:#31708f;font-size:14px;font-weight:bold;cursor:pointer;">Sarah</button>
+        <button id="btn-ben" style="padding:9px 32px;border-radius:6px;border:2px solid #31708f;background:white;color:#31708f;font-size:14px;font-weight:bold;cursor:pointer;">Ben</button>
+      </div>
+      <div style="display:flex;justify-content:center;margin-bottom:12px;">
+        <button id="eval-btn" style="padding:9px 28px;border-radius:6px;border:none;background:#31708f;color:white;font-size:14px;font-weight:bold;cursor:pointer;">Renn!</button>
+      </div>
+      <p id="escape-feedback" style="text-align:center;font-size:14px;margin:0 0 8px;"></p>
+      <div id="escape-nav" style="display:none;margin-top:16px;">
+        <div style="display:flex;justify-content:center;gap:8px;margin:8px 0;">
+          <a href="story_game_4.html" style="padding:10px 24px;border-radius:8px;border:2px solid #31708f;background:white;color:#31708f;text-decoration:none;font-weight:bold;box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fa fa-arrow-left"></i> &nbsp; Zurück</a>
+          <a href="story_game_6.html" style="padding:10px 24px;border-radius:8px;border:2px solid #31708f;background:#31708f;color:white;text-decoration:none;font-weight:bold;box-shadow:0 2px 4px rgba(0,0,0,0.1);">Weiter &nbsp;<i class="fa fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var X_KIDS=[166.5465,128.4283,125.2944,123.3571,157.1723,123.0025,158.3436,153.9595,135.3065,139.51,164.5544,157.4583,119.2284,154.9395,134.1805,169.4844,122.6965,134.6285,166.5973,149.8122];
+    var Y_KIDS=[29.1629,13.7231,17.7741,11.6667,22.3171,15.8745,30.0717,28.4806,22.5023,21.0456,27.1379,27.5532,14.8145,25.1782,15.9643,29.2954,15.0287,14.7432,27.7746,19.6198];
+    var OPT_SLOPE=0.327431,OPT_INT=-25.737280,OPT_MSE=6.092557;
+
+    function fmtDE(v,d){return v.toFixed(d).replace('.',',');}
+
+    // Dense line for precise hover
+    var xDense=[];for(var x=105;x<=180;x++)xDense.push(x);
+    var yDense=xDense.map(function(x){return OPT_SLOPE*x+OPT_INT;});
+
+    Plotly.newPlot('plot-regression5',[
+      {x:X_KIDS,y:Y_KIDS,mode:'markers',type:'scatter',name:'Daten der Kinder',marker:{color:'#0173b2',size:9}},
+      {x:xDense,y:yDense,mode:'lines',type:'scatter',
+       name:'Roboter Gerade: Output = '+fmtDE(OPT_SLOPE,2)+' × Input + ('+fmtDE(OPT_INT,2)+')  (Fehlerwert: '+fmtDE(OPT_MSE,2)+')',
+       line:{color:'#029e73',width:2.5}},
+      {x:[145],y:[22.5],mode:'markers+text',type:'scatter',name:'Sarah',text:['Sarah'],textposition:'top right',
+       marker:{color:'#cc78bc',size:12},textfont:{color:'#cc78bc',size:12}},
+      {x:[153],y:[23.5],mode:'markers+text',type:'scatter',name:'Ben',text:['Ben'],textposition:'top left',
+       marker:{color:'#cc78bc',size:12},textfont:{color:'#cc78bc',size:12}}
+    ],{
+      xaxis:{title:'Körpergröße (cm)',range:[105,180]},
+      yaxis:{title:'Maximale Geschwindigkeit (km/h)',range:[-1.5,31.5]},
+      title:{text:'Größe vs. maximale Geschwindigkeit',font:{size:15}},
+      legend:{orientation:'h',xanchor:'center',x:0.5,y:-0.22,bgcolor:'rgba(255,255,255,0.9)',bordercolor:'#ddd',borderwidth:1},
+      margin:{t:50,r:20,b:130,l:60},
+      plot_bgcolor:'white',paper_bgcolor:'white',
+      dragmode:false
+    },{displayModeBar:false,scrollZoom:false});
+
+    // Escape choice
+    var selected=null;
+    function sel(name){
+      selected=name;
+      document.getElementById('btn-sarah').style.background=(name==='Sarah')?'#31708f':'white';
+      document.getElementById('btn-sarah').style.color=(name==='Sarah')?'white':'#31708f';
+      document.getElementById('btn-ben').style.background=(name==='Ben')?'#31708f':'white';
+      document.getElementById('btn-ben').style.color=(name==='Ben')?'white':'#31708f';
+    }
+    document.getElementById('btn-sarah').onclick=function(){sel('Sarah');};
+    document.getElementById('btn-ben').onclick=function(){sel('Ben');};
+    document.getElementById('eval-btn').onclick=function(){
+      var fb=document.getElementById('escape-feedback'),nav=document.getElementById('escape-nav');
+      if(!selected){fb.style.color='#a94442';fb.textContent='⚠️ Bitte erst Ben oder Sarah auswählen.';return;}
+      if(selected==='Sarah'){
+        fb.style.color='#3c763d';fb.textContent='✅ Richtig! Sarah sollte laufen, weil sie schneller ist, als die Roboter vorhergesagt haben. Im Diagramm liegt ihr Punkt deutlich oberhalb der grünen Regressionsgerade.';nav.style.display='block';
+      }else{fb.style.color='#a94442';fb.textContent='❌ Ben rennt so schnell er kann... aber nicht schnell genug. Er kann gerade so entkommen und zu euch zurück in den Serverraum flüchten.';nav.style.display='none';}
+    };
+  </script>
+</body>
+</html>

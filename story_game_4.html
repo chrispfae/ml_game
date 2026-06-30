@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TecVille – Kapitel 4: Das richtige Modell</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.32.0/plotly.min.js"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 30px 20px 80px; background: #f5f5f5; line-height: 1.6; }
+    .chapter-nav { display: flex; gap: 6px; margin-bottom: 28px; align-items: center; }
+    .chapter-dot { width: 30px; height: 30px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: #666; text-decoration: none; }
+    .chapter-dot.active { background: #31708f; color: white; }
+    .chapter-dot.done { background: #3c763d; color: white; }
+    .cell { margin-top: 44px; }
+    .alert-success { background-color: #dff0d8 !important; }
+    .alert-info    { background-color: #d9edf7 !important; }
+    .alert-danger  { background-color: #f2dede !important; }
+  </style>
+</head>
+<body>
+  <nav class="chapter-nav">
+    <span style="font-size:13px;color:#888;margin-right:4px;">Kapitel</span>
+    <a class="chapter-dot done" href="index.html">1</a>
+    <a class="chapter-dot done" href="story_game_2.html">2</a>
+    <a class="chapter-dot done" href="story_game_3.html">3</a>
+    <span class="chapter-dot active">4</span>
+    <span class="chapter-dot" style="pointer-events:none;">5</span>
+    <span class="chapter-dot" style="pointer-events:none;">6</span>
+  </nav>
+
+  <div class="cell">
+    <div class="alert alert-success" style="border-radius:10px;position:relative;padding:24px 24px 20px;margin-top:25px;border:4px solid #3c763d;">
+      <span style="position:absolute;top:-28px;left:16px;background:#3c763d;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-book"></i></span>
+      <h2>Das richtige Modell</h2>
+      <img src="src/images/4-linear-quadratic.jpg" style="float:right;margin-left:16px;margin-bottom:8px;max-width:220px;border-radius:6px;">
+      <p><strong>Beep</strong> surrt zufrieden und öffnet einen weiteren Datensatz vom kopierten Terminal. „Das habt ihr gut hinbekommen. Aber da ist noch etwas. TecVille hat nicht nur Körpergröße und Geschwindigkeit gespeichert, sondern auch wie weit jemand in einer bestimmten Zeit läuft."</p>
+      <p><strong>Ben:</strong> „Welches Modell passt hier eigentlich? Es gibt ja verschiedene Zusammenhänge!"</p>
+      <div style="clear:both;"></div>
+    </div>
+  </div>
+
+  <div class="cell">
+    <div class="alert alert-info" style="border-radius:10px;position:relative;padding:24px 24px 20px;margin-top:25px;border:4px solid #31708f;">
+      <span style="position:absolute;top:-28px;left:16px;background:#31708f;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-pencil"></i></span>
+      <h3>Aufgabe 4 – Modelle vergleichen</h3>
+      <p><strong>Beep:</strong> „Genau die richtige Frage. Ich zeige euch zwei Modelle. Ihr entscheidet dann, welches besser passt. Schaut euch die Datenpunkte an, klickt auf 'Zeige Modell' und vergleicht die Fehlerwerte."</p>
+    </div>
+  </div>
+
+  <!-- regression_choice_2() -->
+  <div class="cell">
+    <div style="background:white;border:1px solid #ddd;border-radius:8px;padding:16px 20px;">
+      <div id="plot-choice" style="width:100%;height:460px;"></div>
+      <div style="margin-top:14px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;">
+          <input type="checkbox" id="cb-linear" style="width:16px;height:16px;cursor:pointer;">
+          Zeige lineares Modell
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;">
+          <input type="checkbox" id="cb-quadratic" style="width:16px;height:16px;cursor:pointer;">
+          Zeige quadratisches Modell
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- model_selection widget -->
+  <div class="cell">
+    <div class="alert alert-info" style="border-radius:10px;position:relative;padding:24px 24px 20px;margin-top:25px;border:4px solid #31708f;max-width:500px;margin-left:auto;margin-right:auto;">
+      <span style="position:absolute;top:-28px;left:16px;background:#31708f;color:white;border-radius:50%;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;"><i class="fa fa-lock"></i></span>
+      <div style="text-align:center;margin-bottom:16px;">
+        <h3 style="color:#31708f;margin:0 0 6px;">📊 Modellauswahl</h3>
+        <p style="margin:0;color:#31708f;font-size:14px;"><strong>Beep:</strong> "Passt das lineare oder das quadratische Modell besser?"</p>
+      </div>
+      <hr style="border:none;border-top:1px solid #31708f;opacity:0.3;margin-bottom:16px;">
+      <div style="display:flex;justify-content:center;gap:12px;margin-bottom:16px;">
+        <button id="ms-btn-linear" style="padding:9px 24px;border-radius:6px;border:2px solid #31708f;background:white;color:#31708f;font-size:14px;font-weight:bold;cursor:pointer;">Lineares Modell</button>
+        <button id="ms-btn-quadratic" style="padding:9px 24px;border-radius:6px;border:2px solid #31708f;background:white;color:#31708f;font-size:14px;font-weight:bold;cursor:pointer;">Quadratisches Modell</button>
+      </div>
+      <div style="display:flex;justify-content:center;margin-bottom:12px;">
+        <button id="ms-eval-btn" style="padding:9px 28px;border-radius:6px;border:none;background:#31708f;color:white;font-size:14px;font-weight:bold;cursor:pointer;">Auswerten</button>
+      </div>
+      <p id="ms-feedback" style="text-align:center;font-size:14px;margin:0 0 8px;"></p>
+      <div id="ms-nav" style="display:none;margin-top:16px;">
+        <div style="display:flex;justify-content:center;gap:8px;margin:8px 0;">
+          <a href="story_game_3.html" style="padding:10px 24px;border-radius:8px;border:2px solid #31708f;background:white;color:#31708f;text-decoration:none;font-weight:bold;box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fa fa-arrow-left"></i> &nbsp; Zurück</a>
+          <a href="story_game_5.html" style="padding:10px 24px;border-radius:8px;border:2px solid #31708f;background:#31708f;color:white;text-decoration:none;font-weight:bold;box-shadow:0 2px 4px rgba(0,0,0,0.1);">Weiter &nbsp;<i class="fa fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var DIST=[0.0,2.02,4.04,6.06,8.08,10.1,12.12,14.14,16.16,18.18,20.2,22.22,24.24,26.26,28.28,30.3,32.32,34.34,36.36,38.38,40.4,42.42,44.44,46.46,48.48,50.51,52.53,54.55,56.57,58.59,60.61,62.63,64.65,66.67,68.69,70.71,72.73,74.75,76.77,78.79,80.81,82.83,84.85,86.87,88.89,90.91,92.93,94.95,96.97,98.99,101.01,103.03,105.05,107.07,109.09,111.11,113.13,115.15,117.17,119.19,121.21,123.23,125.25,127.27,129.29,131.31,133.33,135.35,137.37,139.39,141.41,143.43,145.45,147.47,149.49,151.52,153.54,155.56,157.58,159.6,161.62,163.64,165.66,167.68,169.7,171.72,173.74,175.76,177.78,179.8,181.82,183.84,185.86,187.88,189.9,191.92,193.94,195.96,197.98,200.0];
+    var TIMES=[9.4411,-7.5879,46.1179,16.9288,19.3362,7.5992,11.5506,15.7143,14.0375,3.1225,20.6461,19.3348,11.2828,3.3792,1.6885,0.479,19.0968,10.9847,28.8064,4.9377,28.3229,19.3757,11.9122,35.4187,23.8634,33.817,39.0693,31.799,19.1772,29.7627,42.4281,20.8824,38.5359,29.4825,26.8446,27.1324,21.3089,34.2293,44.7717,13.3604,37.0502,47.2052,40.4288,58.0533,38.1554,61.1177,64.2536,60.3193,46.4975,83.2952,57.3014,69.9031,51.343,57.2102,74.5896,52.12,79.842,100.2223,58.633,76.6508,94.8421,80.6514,99.4447,92.9446,69.8124,59.809,94.8386,113.7549,92.0284,123.6798,87.2369,121.267,112.5269,116.5031,116.1668,114.9439,125.9841,114.9397,146.3267,120.4492,148.3286,128.5439,128.1708,158.8021,158.461,157.9615,185.2432,153.5448,180.7872,175.9878,199.0576,163.8041,177.4478,178.9907,177.8288,172.8951,194.5189,197.7633,192.8711,206.3752];
+    var LIN_PREDS=[-20.8713,-18.9187,-16.9661,-15.0136,-13.061,-11.1084,-9.1558,-7.2033,-5.2507,-3.2981,-1.3455,0.607,2.5596,4.5122,6.4648,8.4173,10.3699,12.3225,14.2751,16.2276,18.1802,20.1328,22.0854,24.0379,25.9905,27.9431,29.8957,31.8482,33.8008,35.7534,37.706,39.6585,41.6111,43.5637,45.5163,47.4688,49.4214,51.374,53.3266,55.2791,57.2317,59.1843,61.1368,63.0894,65.042,66.9946,68.9471,70.8997,72.8523,74.8049,76.7574,78.71,80.6626,82.6152,84.5677,86.5203,88.4729,90.4255,92.378,94.3306,96.2832,98.2358,100.1883,102.1409,104.0935,106.0461,107.9986,109.9512,111.9038,113.8564,115.8089,117.7615,119.7141,121.6667,123.6192,125.5718,127.5244,129.477,131.4295,133.3821,135.3347,137.2873,139.2398,141.1924,143.145,145.0976,147.0501,149.0027,150.9553,152.9079,154.8604,156.813,158.7656,160.7182,162.6707,164.6233,166.5759,168.5285,170.481,172.4336];
+    var QUAD_PREDS=[12.6873,12.606,12.5662,12.5679,12.6112,12.6959,12.8222,12.99,13.1992,13.45,13.7423,14.0761,14.4514,14.8682,15.3265,15.8264,16.3677,16.9505,17.5749,18.2407,18.9481,19.697,20.4873,21.3192,22.1926,23.1075,24.0639,25.0618,26.1012,27.1822,28.3046,29.4685,30.674,31.9209,33.2094,34.5393,35.9108,37.3238,38.7783,40.2743,41.8118,43.3908,45.0113,46.6733,48.3769,50.1219,51.9085,53.7365,55.6061,57.5171,59.4697,61.4638,63.4994,65.5765,67.6951,69.8552,72.0568,74.2999,76.5846,78.9107,81.2784,83.6875,86.1382,88.6303,91.164,93.7392,96.3559,99.0141,101.7138,104.455,107.2377,110.0619,112.9277,115.8349,118.7837,121.7739,124.8057,127.8789,130.9937,134.15,137.3478,140.5871,143.8679,147.1902,150.554,153.9593,157.4062,160.8945,164.4244,167.9957,171.6086,175.2629,178.9588,182.6962,186.4751,190.2955,194.1574,198.0608,202.0057,205.9921];
+    var LIN_MSE=390.45,QUAD_MSE=151.28;
+
+    function fmtDE(v,d){return v.toFixed(d).replace('.',',');}
+
+    Plotly.newPlot('plot-choice',[
+      {x:DIST,y:TIMES,mode:'markers',type:'scatter',name:'Datenpunkte',marker:{color:'#0173b2',size:7}},
+      {x:DIST,y:LIN_PREDS,mode:'lines',type:'scatter',name:'Lineares Modell (Fehlerwert: '+fmtDE(LIN_MSE,2)+')',line:{color:'#029e73',width:2.5},visible:false},
+      {x:DIST,y:QUAD_PREDS,mode:'lines',type:'scatter',name:'Quadratisches Modell (Fehlerwert: '+fmtDE(QUAD_MSE,2)+')',line:{color:'#de8f05',width:2.5},visible:false}
+    ],{
+      xaxis:{title:'Strecke (m)',range:[-5,205]},
+      yaxis:{title:'Zeit (s)'},
+      title:{text:'Strecke vs. Zeit',font:{size:15}},
+      legend:{orientation:'h',xanchor:'center',x:0.5,y:-0.22,bgcolor:'rgba(255,255,255,0.9)',bordercolor:'#ddd',borderwidth:1},
+      margin:{t:50,r:20,b:130,l:60},
+      plot_bgcolor:'white',paper_bgcolor:'white',
+      dragmode:false
+    },{displayModeBar:false,scrollZoom:false});
+
+    document.getElementById('cb-linear').addEventListener('change',function(){
+      Plotly.restyle('plot-choice',{visible:this.checked},[1]);
+    });
+    document.getElementById('cb-quadratic').addEventListener('change',function(){
+      Plotly.restyle('plot-choice',{visible:this.checked},[2]);
+    });
+
+    var msSelected=null;
+    document.getElementById('ms-btn-linear').onclick=function(){
+      msSelected='linear';
+      this.style.background='#31708f';this.style.color='white';
+      document.getElementById('ms-btn-quadratic').style.background='white';document.getElementById('ms-btn-quadratic').style.color='#31708f';
+    };
+    document.getElementById('ms-btn-quadratic').onclick=function(){
+      msSelected='quadratic';
+      this.style.background='#31708f';this.style.color='white';
+      document.getElementById('ms-btn-linear').style.background='white';document.getElementById('ms-btn-linear').style.color='#31708f';
+    };
+    document.getElementById('ms-eval-btn').onclick=function(){
+      var fb=document.getElementById('ms-feedback'),nav=document.getElementById('ms-nav');
+      if(!msSelected){fb.style.color='#a94442';fb.textContent='⚠️ Bitte erst ein Modell auswählen.';return;}
+      if(msSelected==='quadratic'){
+        fb.style.color='#3c763d';fb.textContent='✅ Richtig! Das quadratische Modell passt besser, weil es einen geringeren Fehlerwert hat als das lineare Modell. Es beschreibt den Zusammenhang zwischen Strecke und Zeit realistischer.';nav.style.display='block';
+      }else{fb.style.color='#a94442';fb.textContent='❌ Leider falsch. Versuche es nochmal.';nav.style.display='none';}
+    };
+  </script>
+</body>
+</html>
